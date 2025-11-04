@@ -1,0 +1,7 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "logout": "Log Out"
+  }
+}

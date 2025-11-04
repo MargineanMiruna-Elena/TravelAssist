@@ -1,0 +1,7 @@
+{
+  "navbar": {
+    "dashboard": "Übersicht",
+    "account": "Konto",
+    "logout": "Abmelden"
+  }
+}
