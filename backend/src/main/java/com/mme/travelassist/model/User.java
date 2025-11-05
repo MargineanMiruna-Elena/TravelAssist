@@ -39,6 +39,6 @@ public class User {
     @NotBlank(message = "Password is required")
     private String password;
 
-    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Trip> trips;
 }
