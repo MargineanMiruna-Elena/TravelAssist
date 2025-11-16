@@ -13,6 +13,7 @@ import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.mapper.UserMapper;
 import com.mme.travelassist.model.User;
 import com.mme.travelassist.service.AuthService;
+import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,6 @@ public class AuthController {
 
     private final AuthService authService;
     private final UserMapper userMapper;
-
 
     /**
      * Handles user log-in requests.
@@ -53,10 +53,10 @@ public class AuthController {
      * @throws PasswordApiException if there is an error with the password API
      */
     @PostMapping("/register")
-    public ResponseEntity<UserResponseDTO> register(@Valid @RequestBody UserDTO userToRegister) throws DuplicateUserException, JsonProcessingException, PasswordApiException {
-        User newUser = authService.register(userToRegister);
-        UserResponseDTO userResponse = userMapper.userToUserResponseDTO(newUser);
-        return ResponseEntity.ok(userResponse);
+    public ResponseEntity<LogInResponse> register(@Valid @RequestBody UserDTO userToRegister)
+            throws DuplicateUserException, JsonProcessingException, PasswordApiException {
+        LogInResponse response = authService.register(userToRegister);
+        return ResponseEntity.ok(response);
     }
 
     /**
@@ -67,9 +67,10 @@ public class AuthController {
      * @throws UserNotFoundException if the user is not found
      * @throws JsonProcessingException if there is an error processing JSON data
      * @throws PasswordApiException if there is an error with the password API
+     * @throws MessagingException if there is an error with the messaging
      */
     @PostMapping("/reset-password")
-    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) throws UserNotFoundException, JsonProcessingException, PasswordApiException {
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request) throws UserNotFoundException, JsonProcessingException, PasswordApiException, MessagingException {
         authService.resetPassword(request);
         return ResponseEntity.ok().build();
     }

@@ -1,0 +1,15 @@
+.language-button:hover {
+    background-color: inherit !important;
+}
+
+.language-button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+    background-color: inherit !important;
+}
+
+.language-button:active {
+    background-color: inherit !important;
+    box-shadow: none !important;
+}
+

@@ -1,0 +1,26 @@
+{
+  "navbar": {
+    "dashboard": "Tablou de bord",
+    "account": "Cont",
+    "logout": "Deconectare"
+  },
+  "auth": {
+    "login": "Autentificare",
+    "signup": "Înregistrare",
+    "username": "Nume utilizator",
+    "email": "Email",
+    "password": "Parolă",
+    "forgot-password": "Ai uitat parola?",
+    "confirm-password": "Confirmă parola"
+  },
+  "validation": {
+    "name-required": "Numele de utilizator este obligatoriu.",
+    "name-length": "Numele de utilizator trebuie să aibă cel puțin 2 caractere.",
+    "email-required": "Adresa de email este obligatorie.",
+    "email-format": "Adresa de email nu este validă.",
+    "password-required": "Parola este obligatorie.",
+    "password-length": "Parola trebuie să conțină cel puțin 6 caractere.",
+    "confirm-password-required": "Confirmarea parolei este obligatorie.",
+    "passwords-not-equal": "Parolele nu coincid."
+  }
+}

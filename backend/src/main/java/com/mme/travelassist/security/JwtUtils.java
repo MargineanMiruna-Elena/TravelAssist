@@ -23,21 +23,40 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 
-    public String generateToken(String email) {
-        log.debug("Generating JWT for user: {}", email);
+    /**
+     * Generate JWT with email and username as claims
+     */
+    public String generateToken(String email, String username) {
+        log.debug("Generating JWT for user: {} ({})", username, email);
         return Jwts.builder()
                 .setSubject(email)
+                .claim("username", username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
+    /**
+     * Extract email from JWT (subject)
+     */
     public String extractEmail(String token) {
         try {
             return parseClaims(token).getSubject();
         } catch (JwtException e) {
             log.error("Failed to extract email from JWT: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Extract username from JWT
+     */
+    public String extractUsername(String token) {
+        try {
+            return parseClaims(token).get("username", String.class);
+        } catch (JwtException e) {
+            log.error("Failed to extract username from JWT: {}", e.getMessage());
             throw e;
         }
     }

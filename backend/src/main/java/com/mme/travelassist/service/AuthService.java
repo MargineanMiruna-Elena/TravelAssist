@@ -19,7 +19,7 @@ public interface AuthService {
      * Logs in a user with the provided credentials.
      *
      * @param logInRequest the log-in request containing email and password
-     * @return LogInResponse containing the JWT token and user roles
+     * @return LogInResponse containing the JWT token
      * @throws UserNotFoundException if the user is not found
      * @throws InvalidPasswordException if the provided password is incorrect
      */
@@ -29,12 +29,12 @@ public interface AuthService {
      * Registers a new user with the provided user details.
      *
      * @param userDTO the user details for registration
-     * @return User the registered user entity
+     * @return LogInResponse containing the JWT token
      * @throws DuplicateUserException if a user with the same username or email already exists
      * @throws JsonProcessingException if there is an error processing JSON data for the password
      * @throws PasswordApiException if there is an error calling the password generation API
      */
-    User register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException;
+    LogInResponse register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException;
 
     /**
      * Initiates the password reset process for a user.

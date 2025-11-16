@@ -4,7 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0a27bf0f-2903-431c-aee2-21f4e69a3e4e" name="Changes" comment="" />
+    <list default="true" id="0a27bf0f-2903-431c-aee2-21f4e69a3e4e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/frontend/src/utils/validationKeys.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/frontend/src/utils/validationUtils.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/pages/Account.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/pages/Account.js" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -46,9 +51,9 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;feature/database&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/Facultate/Licenta/travelassist&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Facultate/Licenta/TravelAssist&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -104,6 +109,11 @@
       <workItem from="1761591772452" duration="1863000" />
       <workItem from="1761641638969" duration="166000" />
       <workItem from="1762204052219" duration="55000" />
+      <workItem from="1762981798036" duration="319000" />
+      <workItem from="1762983795537" duration="95000" />
+      <workItem from="1762987925687" duration="50000" />
+      <workItem from="1762989870615" duration="103000" />
+      <workItem from="1763040909056" duration="33000" />
     </task>
     <servers />
   </component>

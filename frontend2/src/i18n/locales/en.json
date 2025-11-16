@@ -1,0 +1,26 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "logout": "Log Out"
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "forgot-password": "Forgot Password?",
+    "confirm-password": "Confirm Password"
+  },
+  "validation": {
+    "name-required": "Username is required.",
+    "name-length": "Username must be at least 2 characters.",
+    "email-required": "Email is required.",
+    "email-format": "Invalid email address.",
+    "password-required": "Password is required.",
+    "password-length": "Password must be at least 6 characters.",
+    "confirm-password-required": "Password confirmation is required.",
+    "passwords-not-equal": "Passwords do not match."
+  }
+}

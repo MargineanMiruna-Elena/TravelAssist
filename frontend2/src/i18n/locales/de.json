@@ -1,0 +1,26 @@
+{
+  "navbar": {
+    "dashboard": "Übersicht",
+    "account": "Konto",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgot-password": "Passwort vergessen?",
+    "confirm-password": "Passwort bestätigen"
+  },
+  "validation": {
+    "name-required": "Benutzername ist erforderlich.",
+    "name-length": "Der Benutzername muss mindestens 2 Zeichen lang sein.",
+    "email-required": "E-Mail-Adresse ist erforderlich.",
+    "email-format": "Ungültige E-Mail-Adresse.",
+    "password-required": "Passwort ist erforderlich.",
+    "password-length": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "confirm-password-required": "Passwortbestätigung ist erforderlich.",
+    "passwords-not-equal": "Die Passwörter stimmen nicht überein."
+  }
+}
