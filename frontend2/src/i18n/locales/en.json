@@ -22,5 +22,11 @@
     "password-length": "Password must be at least 6 characters.",
     "confirm-password-required": "Password confirmation is required.",
     "passwords-not-equal": "Passwords do not match."
+  },
+  "api-errors": {
+    "invalid-password": "Invalid email or password.",
+    "user-not-found": "User with this email doesn't exist.",
+    "duplicate-user": "User with this email already exists.",
+    "something-wrong": "Something went wrong."
   }
 }

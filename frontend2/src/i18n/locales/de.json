@@ -22,5 +22,11 @@
     "password-length": "Das Passwort muss mindestens 6 Zeichen lang sein.",
     "confirm-password-required": "Passwortbestätigung ist erforderlich.",
     "passwords-not-equal": "Die Passwörter stimmen nicht überein."
+  },
+  "api-errors": {
+    "invalid-password": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
+    "user-not-found": "Ein Benutzer mit dieser E-Mail-Adresse existiert nicht.",
+    "duplicate-user": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.",
+    "something-wrong": "Es ist ein Fehler aufgetreten."
   }
 }

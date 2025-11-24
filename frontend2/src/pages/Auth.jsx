@@ -67,8 +67,11 @@ const Auth = () => {
 
             navigate("/dashboard");
         } catch (err) {
-            console.error(err);
-            setBackendError(err.message || "Something went wrong");
+            if (err.response) {
+                setBackendError(t(err.response.data.detail))
+            } else {
+                setBackendError(t('api-errors.something-wrong'));
+            }
         } finally {
             setLoading(false);
         }
@@ -215,15 +218,15 @@ const Auth = () => {
                     )}
 
                     {backendError && (
-                        <div className="text-red-500">
+                        <small className="text-red-500">
                             {backendError}
-                        </div>
+                        </small>
                     )}
 
                     <Button
                         type="submit"
                         label={isLogin ?  t('auth.login')  :  t('auth.signup') }
-                        className="w-full h-10 mt-6 !rounded-xl text-lg font-bold !bg-violet-700"
+                        className="w-full h-10 !mt-4 !rounded-xl text-lg font-bold !bg-violet-700"
                     />
                 </form>
 

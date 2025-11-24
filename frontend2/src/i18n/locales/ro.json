@@ -22,5 +22,11 @@
     "password-length": "Parola trebuie să conțină cel puțin 6 caractere.",
     "confirm-password-required": "Confirmarea parolei este obligatorie.",
     "passwords-not-equal": "Parolele nu coincid."
+  },
+  "api-errors": {
+    "invalid-password": "Adresă de email sau parolă invalidă.",
+    "user-not-found": "Nu există un utilizator cu această adresă de email.",
+    "duplicate-user": "Există deja un utilizator cu această adresă de email.",
+    "something-wrong": "A apărut o eroare."
   }
 }
