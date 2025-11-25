@@ -28,5 +28,12 @@
     "user-not-found": "User with this email doesn't exist.",
     "duplicate-user": "User with this email already exists.",
     "something-wrong": "Something went wrong."
+  },
+  "forgot-password": {
+    "header": "Reset Password",
+    "explanation": "Enter your email address and we will send you a new password.",
+    "email": "Email",
+    "cancel": "Cancel",
+    "send": "Send"
   }
 }

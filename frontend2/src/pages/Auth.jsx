@@ -9,6 +9,7 @@ import Logo from "../components/Logo.jsx";
 import LanguageButton from "../components/LanguageButton.jsx";
 import {validateConfirmPassword, validateEmail, validateName, validatePassword} from "../utils/formValidators.js";
 import {useNavigate} from "react-router-dom";
+import ForgotPasswordModal from "../components/ForgotPasswordModal.jsx";
 
 const Auth = () => {
     const {login, register} = useAuth();
@@ -19,6 +20,7 @@ const Auth = () => {
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [backendError, setBackendError] = useState("");
+    const [forgotVisible, setForgotVisible] = useState(false);
 
     const [formData, setFormData] = useState({
         name: "",
@@ -187,11 +189,19 @@ const Auth = () => {
 
                     {isLogin && (
                         <div className="mt-0 text-end">
-                            <a href="#" className="text-sm text-violet-700 hover:underline">
+                            <button
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    setForgotVisible(true);
+                                }}
+                                className="text-sm text-violet-700 hover:underline"
+                            >
                                 {t('auth.forgot-password')}
-                            </a>
+                            </button>
                         </div>
                     )}
+
 
                     {!isLogin && (
                         <FloatLabel>
@@ -225,6 +235,7 @@ const Auth = () => {
 
                     <Button
                         type="submit"
+                        loading={loading}
                         label={isLogin ?  t('auth.login')  :  t('auth.signup') }
                         className="w-full h-10 !mt-4 !rounded-xl text-lg font-bold !bg-violet-700"
                     />
@@ -232,6 +243,10 @@ const Auth = () => {
 
             </div>
 
+            <ForgotPasswordModal
+                visible={forgotVisible}
+                onClose={() => setForgotVisible(false)}
+            />
         </div>
     );
 };

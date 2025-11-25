@@ -53,7 +53,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public LogInResponse register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException {
+    public LogInResponse register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException, MessagingException {
         log.info("Registering new user: {}", userDTO.getEmail());
 
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
@@ -71,6 +71,8 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtils.generateToken(user.getEmail(), user.getUsername());
         log.info("JWT generated for new user: {}", user.getEmail());
 
+        mailService.sendRegisterConfirmationEmail(user.getUsername(), user.getEmail());
+
         return new LogInResponse(token);
     }
 
@@ -84,7 +86,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Password reset successfully for email: {}", user.getEmail());
-        mailService.sendGeneratedPasswordEmail(user.getEmail(), newPassword);
+        mailService.sendGeneratedPasswordEmail(user.getUsername(), user.getEmail(), newPassword);
     }
 
     @Override

@@ -5,20 +5,31 @@ import jakarta.mail.MessagingException;
 public interface MailService {
 
     /**
-     * Sends an email message with the specified recipient, subject, and HTML body.
-     * @param recipient Recipient's email address.
-     * @param subject Subject of the email.
-     * @param htmlBody the HTML page containing the email body.
-     * @throws MessagingException if there is an error in sending the email.
+     * Sends an email message to a specified recipient.
+     *
+     * @param recipient the recipient's email address
+     * @param subject   the subject line of the email
+     * @param htmlBody  the HTML content of the email body
+     * @throws MessagingException if an error occurs while sending the email
      */
-    public void sendMessage(String recipient, String subject, String htmlBody) throws MessagingException;
+    void sendMessage(String recipient, String subject, String htmlBody) throws MessagingException;
 
+    /**
+     * Sends a password reset notification email containing a newly generated password.
+     *
+     * @param name              the recipient's name
+     * @param email             the recipient's email address
+     * @param generatedPassword the generated password to include in the message
+     * @throws MessagingException if an error occurs while sending the email
+     */
+    void sendGeneratedPasswordEmail(String name, String email, String generatedPassword) throws MessagingException;
 
-        /**
-         * Sends an email with a generated password.
-         * @param recipient Recipient's email address.
-         * @param generatedPassword The generated password to be sent.
-         * @throws MessagingException If there is an error sending the email.
-         */
-    void sendGeneratedPasswordEmail(String recipient, String generatedPassword) throws MessagingException;
+    /**
+     * Sends a registration confirmation email to a newly created user.
+     *
+     * @param name  the recipient's name
+     * @param email the recipient's email address
+     * @throws MessagingException if an error occurs while sending the email
+     */
+    void sendRegisterConfirmationEmail(String name, String email) throws MessagingException;
 }

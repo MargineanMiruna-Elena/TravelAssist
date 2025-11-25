@@ -28,5 +28,12 @@
     "user-not-found": "Ein Benutzer mit dieser E-Mail-Adresse existiert nicht.",
     "duplicate-user": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.",
     "something-wrong": "Es ist ein Fehler aufgetreten."
+  },
+  "forgot-password": {
+    "header": "Passwort zurücksetzen",
+    "explanation": "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen ein neues Passwort zu.",
+    "email": "E-Mail",
+    "cancel": "Abbrechen",
+    "send": "Senden"
   }
 }

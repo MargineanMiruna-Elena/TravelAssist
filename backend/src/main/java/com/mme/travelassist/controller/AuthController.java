@@ -54,7 +54,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     public ResponseEntity<LogInResponse> register(@Valid @RequestBody UserDTO userToRegister)
-            throws DuplicateUserException, JsonProcessingException, PasswordApiException {
+            throws DuplicateUserException, JsonProcessingException, PasswordApiException, MessagingException {
         LogInResponse response = authService.register(userToRegister);
         return ResponseEntity.ok(response);
     }

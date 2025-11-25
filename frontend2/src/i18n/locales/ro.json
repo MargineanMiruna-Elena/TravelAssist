@@ -28,5 +28,12 @@
     "user-not-found": "Nu există un utilizator cu această adresă de email.",
     "duplicate-user": "Există deja un utilizator cu această adresă de email.",
     "something-wrong": "A apărut o eroare."
+  },
+  "forgot-password": {
+    "header": "Resetare parolă",
+    "explanation": "Introduceți adresa de email și vă vom trimite o parolă nouă.",
+    "email": "Email",
+    "cancel": "Anulează",
+    "send": "Trimite"
   }
 }

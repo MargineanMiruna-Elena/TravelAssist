@@ -10,7 +10,6 @@ import com.mme.travelassist.exception.auth.InvalidTokenException;
 import com.mme.travelassist.exception.user.DuplicateUserException;
 import com.mme.travelassist.exception.user.PasswordApiException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
-import com.mme.travelassist.model.User;
 import jakarta.mail.MessagingException;
 
 public interface AuthService {
@@ -33,8 +32,9 @@ public interface AuthService {
      * @throws DuplicateUserException if a user with the same username or email already exists
      * @throws JsonProcessingException if there is an error processing JSON data for the password
      * @throws PasswordApiException if there is an error calling the password generation API
+     * @throws MessagingException if there is an error sending the confirmation email
      */
-    LogInResponse register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException;
+    LogInResponse register(UserDTO userDTO) throws DuplicateUserException, JsonProcessingException, PasswordApiException, MessagingException;
 
     /**
      * Initiates the password reset process for a user.
@@ -43,6 +43,7 @@ public interface AuthService {
      * @throws UserNotFoundException if the user with the provided email does not exist
      * @throws JsonProcessingException if there is an error processing JSON data for the password
      * @throws PasswordApiException if there is an error calling the password generation API
+     * @throws MessagingException if there is an error sending the reset password email
      */
     void resetPassword(ResetPasswordRequest resetPasswordRequest) throws UserNotFoundException, JsonProcessingException, PasswordApiException, MessagingException;
 

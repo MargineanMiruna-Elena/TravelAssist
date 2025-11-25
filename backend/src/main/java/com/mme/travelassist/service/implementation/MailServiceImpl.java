@@ -35,14 +35,26 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendGeneratedPasswordEmail(String recipient, String generatedPassword) throws MessagingException {
+    public void sendGeneratedPasswordEmail(String name, String email, String generatedPassword) throws MessagingException {
         Context thymeleafContext = new Context();
 
-        thymeleafContext.setVariable(recipientName, recipient);
+        thymeleafContext.setVariable(recipientName, name);
         thymeleafContext.setVariable("generatedPassword", generatedPassword);
         String htmlBody = templateEngine.process("generatedPasswordEmail.html", thymeleafContext);
-        mailSubject = "Your Generated Password";
+        mailSubject = "Password Reset Notification";
 
-        sendMessage(recipient, mailSubject, htmlBody);
+        sendMessage(email, mailSubject, htmlBody);
+    }
+
+    @Override
+    public void sendRegisterConfirmationEmail(String name, String email) throws MessagingException {
+        Context thymeleafContext = new Context();
+
+        thymeleafContext.setVariable(recipientName, name);
+        thymeleafContext.setVariable("recipientEmail", email);
+        String htmlBody = templateEngine.process("registerConfirmationEmail.html", thymeleafContext);
+        mailSubject = "Register Confirmation Notification";
+
+        sendMessage(email, mailSubject, htmlBody);
     }
 }
