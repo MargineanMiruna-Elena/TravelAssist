@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.UUID;
 
 @Slf4j
 @Component
@@ -24,13 +25,14 @@ public class JwtUtils {
     }
 
     /**
-     * Generate JWT with email and username as claims
+     * Generate JWT with user ID, email, and username as claims
      */
-    public String generateToken(String email, String username) {
-        log.debug("Generating JWT for user: {} ({})", username, email);
+    public String generateToken(UUID id, String email, String username) {
+        log.debug("Generating JWT for user: {} ({}, ID: {})", username, email, id);
         return Jwts.builder()
                 .setSubject(email)
                 .claim("username", username)
+                .claim("id", id.toString())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
@@ -57,6 +59,19 @@ public class JwtUtils {
             return parseClaims(token).get("username", String.class);
         } catch (JwtException e) {
             log.error("Failed to extract username from JWT: {}", e.getMessage());
+            throw e;
+        }
+    }
+
+    /**
+     * Extract User ID from JWT
+     */
+    public UUID extractUserId(String token) {
+        try {
+            String idStr = parseClaims(token).get("id", String.class);
+            return UUID.fromString(idStr);
+        } catch (JwtException | IllegalArgumentException e) {
+            log.error("Failed to extract user ID from JWT: {}", e.getMessage());
             throw e;
         }
     }

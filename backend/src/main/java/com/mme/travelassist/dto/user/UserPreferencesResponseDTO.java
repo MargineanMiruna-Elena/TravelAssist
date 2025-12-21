@@ -5,8 +5,8 @@ import lombok.Data;
 import java.util.UUID;
 
 @Data
-public class UserResponseDTO {
+public class UserPreferencesResponseDTO {
     private UUID id;
-    private String username;
-    private String email;
+    private String language;
+    private Boolean notificationsEmail;
 }

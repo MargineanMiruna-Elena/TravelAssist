@@ -1,5 +1,6 @@
 package com.mme.travelassist.service.implementation;
 
+import com.mme.travelassist.model.enums.Language;
 import com.mme.travelassist.service.MailService;
 import jakarta.mail.*;
 import jakarta.mail.internet.MimeMessage;
@@ -35,13 +36,20 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public void sendGeneratedPasswordEmail(String name, String email, String generatedPassword) throws MessagingException {
+    public void sendGeneratedPasswordEmail(String name, String email, String generatedPassword, Language lang) throws MessagingException {
         Context thymeleafContext = new Context();
+
+        String subject = switch (lang) {
+            case Language.ro -> "Confirmare Resetare Parolă";
+            case Language.de -> "Bestätigung der Passwort-Zurücksetzung";
+            default -> "Password Reset Notification";
+        };
+        String templateName = "passwordChangeConfirmationEmail_" + lang + ".html";
 
         thymeleafContext.setVariable(recipientName, name);
         thymeleafContext.setVariable("generatedPassword", generatedPassword);
-        String htmlBody = templateEngine.process("generatedPasswordEmail.html", thymeleafContext);
-        mailSubject = "Password Reset Notification";
+        String htmlBody = templateEngine.process(templateName, thymeleafContext);
+        mailSubject = subject;
 
         sendMessage(email, mailSubject, htmlBody);
     }
@@ -54,6 +62,25 @@ public class MailServiceImpl implements MailService {
         thymeleafContext.setVariable("recipientEmail", email);
         String htmlBody = templateEngine.process("registerConfirmationEmail.html", thymeleafContext);
         mailSubject = "Register Confirmation Notification";
+
+        sendMessage(email, mailSubject, htmlBody);
+    }
+
+    @Override
+    public void sendChangedPasswordConfirmationEmail(String name, String email, Language lang) throws MessagingException {
+        Context thymeleafContext = new Context();
+
+        String subject = switch (lang) {
+            case Language.ro -> "Confirmare Schimbare Parolă";
+            case Language.de -> "Bestätigung der Passwortänderung";
+            default -> "Password Change Notification";
+        };
+        String templateName = "passwordChangeConfirmationEmail_" + lang + ".html";
+
+        thymeleafContext.setVariable(recipientName, name);
+        thymeleafContext.setVariable("recipientEmail", email);
+        String htmlBody = templateEngine.process(templateName, thymeleafContext);
+        mailSubject = subject;
 
         sendMessage(email, mailSubject, htmlBody);
     }

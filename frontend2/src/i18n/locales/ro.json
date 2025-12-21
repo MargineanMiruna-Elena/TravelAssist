@@ -35,5 +35,38 @@
     "email": "Email",
     "cancel": "Anulează",
     "send": "Trimite"
+  },
+  "account": {
+    "log-out": "Deconectare",
+    "information": "Informații cont",
+    "username": "Nume de utilizator",
+    "email": "Email",
+    "edit-profile": "Editează profilul",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "security": "Securitate",
+    "change-password": "Schimbare parolă",
+    "change-password-text": "Actualizează-ți parola",
+    "preferences": "Preferințe",
+    "language": "Limbă",
+    "language-text": "Selectează limba preferată",
+    "notifications": "Notificări",
+    "notifications-text": "Primește notificări prin email",
+    "danger": "Zonă de pericol",
+    "delete-account": "Șterge contul"
+  },
+  "change-password": {
+    "header": "Schimbă parola",
+    "old-password": "Parola veche",
+    "new-password": "Parola nouă",
+    "confirm-password": "Confirmă parola",
+    "save": "Salvează",
+    "cancel": "Anulează"
+  },
+  "delete-account": {
+    "header": "Ești sigur că vrei să îți ștergi contul?",
+    "explanation": "Această acțiune este permanentă și nu poate fi anulată.",
+    "yes": "Da",
+    "no": "Nu"
   }
 }

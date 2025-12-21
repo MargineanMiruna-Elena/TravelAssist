@@ -31,6 +31,7 @@ export default function AuthProvider({ children }) {
 
         const decoded = jwtDecode(data.token);
         const currentUser = {
+            id: decoded.id || "",
             email: decoded.sub || "",
             username: decoded.username || ""
         };
@@ -50,8 +51,9 @@ export default function AuthProvider({ children }) {
 
         const decoded = jwtDecode(data.token);
         const currentUser = {
+            id: decoded.id || "",
             email: decoded.sub || "",
-            username: decoded.username || name
+            username: decoded.username || ""
         };
 
         localStorage.setItem("user", JSON.stringify(currentUser));

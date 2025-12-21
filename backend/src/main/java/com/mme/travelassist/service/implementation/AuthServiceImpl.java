@@ -1,6 +1,8 @@
 package com.mme.travelassist.service.implementation;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.mme.travelassist.model.UserPreferences;
+import com.mme.travelassist.repository.UserPreferencesRepository;
 import com.mme.travelassist.security.JwtUtils;
 import com.mme.travelassist.dto.auth.LogInRequest;
 import com.mme.travelassist.dto.auth.LogInResponse;
@@ -29,6 +31,7 @@ import org.springframework.stereotype.Service;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
+    private final UserPreferencesRepository userPreferencesRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtils jwtUtils;
     private final MailService mailService;
@@ -46,7 +49,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidPasswordException();
         }
 
-        String token = jwtUtils.generateToken(user.getEmail(), user.getUsername());
+        String token = jwtUtils.generateToken(user.getId(), user.getEmail(), user.getUsername());
         log.info("JWT generated for user: {}", user.getEmail());
 
         return new LogInResponse(token);
@@ -65,10 +68,14 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
 
+        UserPreferences userPreferences = new UserPreferences();
+        userPreferences.setUser(user);
+
         userRepository.save(user);
+        userPreferencesRepository.save(userPreferences);
         log.info("User registered successfully: {}", user.getEmail());
 
-        String token = jwtUtils.generateToken(user.getEmail(), user.getUsername());
+        String token = jwtUtils.generateToken(user.getId(), user.getEmail(), user.getUsername());
         log.info("JWT generated for new user: {}", user.getEmail());
 
         mailService.sendRegisterConfirmationEmail(user.getUsername(), user.getEmail());
@@ -86,7 +93,7 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
         log.info("Password reset successfully for email: {}", user.getEmail());
-        mailService.sendGeneratedPasswordEmail(user.getUsername(), user.getEmail(), newPassword);
+        mailService.sendGeneratedPasswordEmail(user.getUsername(), user.getEmail(), newPassword, userPreferencesRepository.findByUserId(user.getId()).get().getLanguage());
     }
 
     @Override

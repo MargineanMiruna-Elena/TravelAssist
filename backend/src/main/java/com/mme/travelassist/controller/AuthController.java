@@ -5,13 +5,11 @@ import com.mme.travelassist.dto.auth.LogInRequest;
 import com.mme.travelassist.dto.auth.LogInResponse;
 import com.mme.travelassist.dto.auth.ResetPasswordRequest;
 import com.mme.travelassist.dto.user.UserDTO;
-import com.mme.travelassist.dto.user.UserResponseDTO;
 import com.mme.travelassist.exception.auth.InvalidPasswordException;
 import com.mme.travelassist.exception.user.DuplicateUserException;
 import com.mme.travelassist.exception.user.PasswordApiException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.mapper.UserMapper;
-import com.mme.travelassist.model.User;
 import com.mme.travelassist.service.AuthService;
 import jakarta.mail.MessagingException;
 import jakarta.validation.Valid;
@@ -28,7 +26,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserMapper userMapper;
 
     /**
      * Handles user log-in requests.

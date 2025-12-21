@@ -35,5 +35,38 @@
     "email": "E-Mail",
     "cancel": "Abbrechen",
     "send": "Senden"
+  },
+  "account": {
+    "log-out": "Abmelden",
+    "information": "Kontoinformationen",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "edit-profile": "Profil bearbeiten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "security": "Sicherheit",
+    "change-password": "Passwort ändern",
+    "change-password-text": "Aktualisieren Sie Ihr Passwort",
+    "preferences": "Präferenzen",
+    "language": "Sprache",
+    "language-text": "Wählen Sie Ihre bevorzugte Sprache",
+    "notifications": "Benachrichtigungen",
+    "notifications-text": "E-Mail-Benachrichtigungen erhalten",
+    "danger": "Gefahrenzone",
+    "delete-account": "Konto löschen"
+  },
+  "change-password": {
+    "header": "Passwort ändern",
+    "old-password": "Altes Passwort",
+    "new-password": "Neues Passwort",
+    "confirm-password": "Passwort bestätigen",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "delete-account": {
+    "header": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
+    "explanation": "Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden.",
+    "yes": "Ja",
+    "no": "Nein"
   }
 }

@@ -1,6 +1,5 @@
 package com.mme.travelassist.dto.user;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -9,7 +8,6 @@ import lombok.Data;
 @Data
 public class UserDTO {
 
-    @Column(nullable = false, unique = true)
     @NotBlank(message = "Username must not be blank")
     @Size(max = 50, message = "Username must be less than 50 characters")
     private String username;
