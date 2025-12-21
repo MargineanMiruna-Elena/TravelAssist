@@ -15,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-@Table(name = "daily_plan")
+@Table(name = "daily_plans")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
@@ -39,6 +39,6 @@ public class DailyPlan {
     @Column(nullable = false)
     private Double totalTime;
 
-    @OneToMany(mappedBy = "tripAttraction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "dailyPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TripAttraction> tripAttractions;
 }

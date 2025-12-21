@@ -40,4 +40,9 @@ public class TripAttraction {
 
     @Column(nullable = false)
     private LocalDate plannedDate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "daily_plan_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private DailyPlan dailyPlan;
 }

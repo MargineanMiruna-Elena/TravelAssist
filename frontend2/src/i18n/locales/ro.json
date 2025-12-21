@@ -1,0 +1,72 @@
+{
+  "navbar": {
+    "dashboard": "Tablou de bord",
+    "account": "Cont",
+    "logout": "Deconectare"
+  },
+  "auth": {
+    "login": "Autentificare",
+    "signup": "Înregistrare",
+    "username": "Nume utilizator",
+    "email": "Email",
+    "password": "Parolă",
+    "forgot-password": "Ai uitat parola?",
+    "confirm-password": "Confirmă parola"
+  },
+  "validation": {
+    "name-required": "Numele de utilizator este obligatoriu.",
+    "name-length": "Numele de utilizator trebuie să aibă cel puțin 2 caractere.",
+    "email-required": "Adresa de email este obligatorie.",
+    "email-format": "Adresa de email nu este validă.",
+    "password-required": "Parola este obligatorie.",
+    "password-length": "Parola trebuie să conțină cel puțin 6 caractere.",
+    "confirm-password-required": "Confirmarea parolei este obligatorie.",
+    "passwords-not-equal": "Parolele nu coincid."
+  },
+  "api-errors": {
+    "invalid-password": "Adresă de email sau parolă invalidă.",
+    "user-not-found": "Nu există un utilizator cu această adresă de email.",
+    "duplicate-user": "Există deja un utilizator cu această adresă de email.",
+    "something-wrong": "A apărut o eroare."
+  },
+  "forgot-password": {
+    "header": "Resetare parolă",
+    "explanation": "Introduceți adresa de email și vă vom trimite o parolă nouă.",
+    "email": "Email",
+    "cancel": "Anulează",
+    "send": "Trimite"
+  },
+  "account": {
+    "log-out": "Deconectare",
+    "information": "Informații cont",
+    "username": "Nume de utilizator",
+    "email": "Email",
+    "edit-profile": "Editează profilul",
+    "save": "Salvează",
+    "cancel": "Anulează",
+    "security": "Securitate",
+    "change-password": "Schimbare parolă",
+    "change-password-text": "Actualizează-ți parola",
+    "preferences": "Preferințe",
+    "language": "Limbă",
+    "language-text": "Selectează limba preferată",
+    "notifications": "Notificări",
+    "notifications-text": "Primește notificări prin email",
+    "danger": "Zonă de pericol",
+    "delete-account": "Șterge contul"
+  },
+  "change-password": {
+    "header": "Schimbă parola",
+    "old-password": "Parola veche",
+    "new-password": "Parola nouă",
+    "confirm-password": "Confirmă parola",
+    "save": "Salvează",
+    "cancel": "Anulează"
+  },
+  "delete-account": {
+    "header": "Ești sigur că vrei să îți ștergi contul?",
+    "explanation": "Această acțiune este permanentă și nu poate fi anulată.",
+    "yes": "Da",
+    "no": "Nu"
+  }
+}

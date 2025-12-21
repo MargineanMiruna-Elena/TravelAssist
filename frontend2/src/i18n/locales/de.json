@@ -1,0 +1,72 @@
+{
+  "navbar": {
+    "dashboard": "Übersicht",
+    "account": "Konto",
+    "logout": "Abmelden"
+  },
+  "auth": {
+    "login": "Anmelden",
+    "signup": "Registrieren",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "password": "Passwort",
+    "forgot-password": "Passwort vergessen?",
+    "confirm-password": "Passwort bestätigen"
+  },
+  "validation": {
+    "name-required": "Benutzername ist erforderlich.",
+    "name-length": "Der Benutzername muss mindestens 2 Zeichen lang sein.",
+    "email-required": "E-Mail-Adresse ist erforderlich.",
+    "email-format": "Ungültige E-Mail-Adresse.",
+    "password-required": "Passwort ist erforderlich.",
+    "password-length": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+    "confirm-password-required": "Passwortbestätigung ist erforderlich.",
+    "passwords-not-equal": "Die Passwörter stimmen nicht überein."
+  },
+  "api-errors": {
+    "invalid-password": "Ungültige E-Mail-Adresse oder ungültiges Passwort.",
+    "user-not-found": "Ein Benutzer mit dieser E-Mail-Adresse existiert nicht.",
+    "duplicate-user": "Ein Benutzer mit dieser E-Mail-Adresse existiert bereits.",
+    "something-wrong": "Es ist ein Fehler aufgetreten."
+  },
+  "forgot-password": {
+    "header": "Passwort zurücksetzen",
+    "explanation": "Geben Sie Ihre E-Mail-Adresse ein, und wir senden Ihnen ein neues Passwort zu.",
+    "email": "E-Mail",
+    "cancel": "Abbrechen",
+    "send": "Senden"
+  },
+  "account": {
+    "log-out": "Abmelden",
+    "information": "Kontoinformationen",
+    "username": "Benutzername",
+    "email": "E-Mail",
+    "edit-profile": "Profil bearbeiten",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "security": "Sicherheit",
+    "change-password": "Passwort ändern",
+    "change-password-text": "Aktualisieren Sie Ihr Passwort",
+    "preferences": "Präferenzen",
+    "language": "Sprache",
+    "language-text": "Wählen Sie Ihre bevorzugte Sprache",
+    "notifications": "Benachrichtigungen",
+    "notifications-text": "E-Mail-Benachrichtigungen erhalten",
+    "danger": "Gefahrenzone",
+    "delete-account": "Konto löschen"
+  },
+  "change-password": {
+    "header": "Passwort ändern",
+    "old-password": "Altes Passwort",
+    "new-password": "Neues Passwort",
+    "confirm-password": "Passwort bestätigen",
+    "save": "Speichern",
+    "cancel": "Abbrechen"
+  },
+  "delete-account": {
+    "header": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten?",
+    "explanation": "Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden.",
+    "yes": "Ja",
+    "no": "Nein"
+  }
+}

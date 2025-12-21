@@ -1,0 +1,72 @@
+{
+  "navbar": {
+    "dashboard": "Dashboard",
+    "account": "Account",
+    "logout": "Log Out"
+  },
+  "auth": {
+    "login": "Log In",
+    "signup": "Sign Up",
+    "username": "Username",
+    "email": "Email",
+    "password": "Password",
+    "forgot-password": "Forgot Password?",
+    "confirm-password": "Confirm Password"
+  },
+  "validation": {
+    "name-required": "Username is required.",
+    "name-length": "Username must be at least 2 characters.",
+    "email-required": "Email is required.",
+    "email-format": "Invalid email address.",
+    "password-required": "Password is required.",
+    "password-length": "Password must be at least 6 characters.",
+    "confirm-password-required": "Password confirmation is required.",
+    "passwords-not-equal": "Passwords do not match."
+  },
+  "api-errors": {
+    "invalid-password": "Invalid email or password.",
+    "user-not-found": "User with this email doesn't exist.",
+    "duplicate-user": "User with this email already exists.",
+    "something-wrong": "Something went wrong."
+  },
+  "forgot-password": {
+    "header": "Reset Password",
+    "explanation": "Enter your email address and we will send you a new password.",
+    "email": "Email",
+    "cancel": "Cancel",
+    "send": "Send"
+  },
+  "account": {
+    "log-out": "Log Out",
+    "information": "Account Information",
+    "username": "Username",
+    "email": "Email",
+    "edit-profile": "Edit Profile",
+    "save": "Save",
+    "cancel": "Cancel",
+    "security": "Security",
+    "change-password": "Change Password",
+    "change-password-text": "Update your password",
+    "preferences": "Preferences",
+    "language": "Language",
+    "language-text": "Select your preferred language",
+    "notifications": "Notifications",
+    "notifications-text": "Receive email notifications",
+    "danger": "Danger Zone",
+    "delete-account": "Delete Account"
+  },
+  "change-password": {
+    "header": "Change Password",
+    "old-password": "Old Password",
+    "new-password": "New Password",
+    "confirm-password": "Confirm Password",
+    "save": "Save",
+    "cancel": "Cancel"
+  },
+  "delete-account": {
+    "header": "Are you sure you want to delete your account?",
+    "explanation": "This action is permanent and cannot be reversed.",
+    "yes": "Yes",
+    "no": "No"
+  }
+}

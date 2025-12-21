@@ -45,9 +45,12 @@ public class Trip {
     private LocalDate endDate;
 
     @Column(nullable = false)
+    private String transportMethod;
+
+    @Column(nullable = false)
     @NotBlank(message = "Description must not be blank")
     private String description;
 
-    @OneToMany(mappedBy = "dailyPlan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DailyPlan> dailyPlans;
 }
