@@ -118,9 +118,12 @@ public class UserServiceImpl implements UserService {
         }
 
         user.get().setPassword(passwordEncoder.encode(newPassword));
-        userRepository.save(user.get());
 
-        mailService.sendChangedPasswordConfirmationEmail(user.get().getUsername(), user.get().getEmail(), userPreferencesRepository.findByUserId(id).get().getLanguage());
+        Optional<UserPreferences> userPreferences = userPreferencesRepository.findByUserId(id);
+        if (userPreferences.isPresent() && userPreferences.get().getNotificationsEmail()) {
+            mailService.sendChangedPasswordConfirmationEmail(user.get().getUsername(), user.get().getEmail(), userPreferences.get().getLanguage());
+        }
+        userRepository.save(user.get());
     }
 
     @Transactional

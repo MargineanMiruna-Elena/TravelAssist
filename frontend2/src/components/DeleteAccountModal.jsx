@@ -3,9 +3,8 @@ import UserService from "../service/userService.js";
 import {Button} from "primereact/button";
 import {Dialog} from "primereact/dialog";
 import {useTranslation} from "react-i18next";
-import {validateConfirmPassword} from "../utils/formValidators.js";
 
-function ChangePasswordModal({visible, onClose}) {
+function DeleteAccountModal({visible, onClose}) {
     const {t} = useTranslation();
     const [loading, setLoading] = useState(false);
 
@@ -58,4 +57,4 @@ function ChangePasswordModal({visible, onClose}) {
     );
 }
 
-export default ChangePasswordModal;
+export default DeleteAccountModal;
