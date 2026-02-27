@@ -71,5 +71,88 @@
     "explanation": "Această acțiune este permanentă și nu poate fi anulată.",
     "yes": "Da",
     "no": "Nu"
+  },
+  "trip": {
+    "beach": "Plajă",
+    "culture": "Cultură",
+    "city-break": "City Break",
+    "nature": "Natură",
+    "nightlife": "Viață de noapte",
+    "gastronomy": "Gastronomie",
+    "adventure": "Aventură",
+    "history": "Istorie",
+    "shopping": "Cumpărături",
+    "family-friendly": "Ideal pentru familii",
+    "jan": "Ianuarie",
+    "feb": "Februarie",
+    "mar": "Martie",
+    "apr": "Aprilie",
+    "may": "Mai",
+    "jun": "Iunie",
+    "jul": "Iulie",
+    "aug": "August",
+    "sep": "Septembrie",
+    "oct": "Octombrie",
+    "nov": "Noiembrie",
+    "dec": "Decembrie",
+    "where": {
+      "title": "Unde vrei să călătorești?",
+      "subtitle": "Alege o destinație sau fii flexibil",
+      "textbox": "Introdu o locație...",
+      "checkbox": "Sunt flexibil"
+    },
+    "when": {
+      "title": "Când vrei să călătorești?",
+      "subtitle": "Alege o perioadă specifică sau lunile preferate",
+      "period": "Perioadă specifică",
+      "months": "Luni",
+      "departure-date": "Data plecării",
+      "return-date": "Data întoarcerii",
+      "select-date": "Selectează o dată",
+      "preferred-months": "Selectează lunile preferate"
+    },
+    "how-long": {
+      "title": "Cât timp plănuiești să stai?",
+      "subtitle": "Alege câte zile vrei să petreci în călătoria ta",
+      "textbox": "Introdu numărul de zile...",
+      "days": "zile"
+    },
+    "interests": {
+      "title": "Ce te interesează?",
+      "subtitle": "Alege categoriile de activități de care ești interesat"
+    },
+    "preferences": {
+      "title": "Alte preferințe?",
+      "subtitle": "Spune-mi mai multe despre planurile tale de călătorie",
+      "example": "ex: Prefer hoteluri de 4 stele, vreau să evit locurile aglomerate, sunt interesat de festivaluri locale...",
+      "summary": "Sumar călătorie:",
+      "destination": "Destinație: ",
+      "flexible": "Flexibil",
+      "period": "Perioadă: ",
+      "unconfigured": "Neconfigurat",
+      "duration": "Durată: ",
+      "day": "zi",
+      "interests": "Interese: ",
+      "not-selected": "Nimic selectat"
+    },
+    "destinations": {
+      "title": "Sugestii pentru tine",
+      "subtitle": "Alege o destinație care te inspiră"
+    },
+    "attractions": {
+      "title": "Selectează atracțiile",
+      "subtitle": "Alege cel puțin un loc pe care ai dori să-l vizitezi"
+    },
+    "fallback": {
+      "country-destinations": "Iată câteva dintre cele mai apreciate destinații din",
+      "not-found": "Nu a fost găsită nicio țară cu acest nume: ",
+      "other-suggestions": "Iată alte destinații care se potrivesc stilului tău.",
+      "location-not-found": "Nu a fost găsită nicio destinație cu acest nume: "
+    },
+    "buttons": {
+      "prev": "Înapoi",
+      "next": "Înainte",
+      "finish": "Finalizează"
+    }
   }
 }

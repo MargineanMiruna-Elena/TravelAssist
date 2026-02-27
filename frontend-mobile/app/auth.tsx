@@ -110,7 +110,7 @@ const Auth = () => {
             <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="p-6">
 
                 <View className="items-center mt-12 mb-6 relative">
-                    <Logo className="text-6xl"/>
+                    <Logo name="Assist" className="text-6xl"/>
                 </View>
 
                 <View className="relative flex-row h-12 mb-4 border border-violet-500 rounded-xl overflow-hidden bg-white">

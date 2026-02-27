@@ -1,7 +1,7 @@
 import React from 'react';
-import { Tabs } from 'expo-router';
+import {router, Tabs} from 'expo-router';
 import {AntDesign, FontAwesome, MaterialCommunityIcons} from '@expo/vector-icons';
-import {Platform, View} from 'react-native';
+import {Platform, View, TouchableOpacity} from 'react-native';
 
 export default function TabLayout() {
     return (
@@ -42,26 +42,31 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="add-trip"
+                name="add-trip-placeholder"
                 options={{
-                    title: 'Add Trip',
-                    tabBarIcon: () => (
-                        <View style={{
-                            backgroundColor: '#7f22fe',
-                            width: 56,
-                            height: 56,
-                            borderRadius: 28,
-                            justifyContent: 'center',
-                            alignItems: 'center',
-                            marginBottom: Platform.OS === 'ios' ? 15 : 25,
-                            elevation: 5,
-                            shadowColor: '#000',
-                            shadowOffset: { width: 0, height: 2 },
-                            shadowOpacity: 0.3,
-                            shadowRadius: 3,
-                        }}>
-                            <AntDesign name="plus" size={32} color="white" />
-                        </View>
+                    tabBarButton: (props) => (
+                        <TouchableOpacity
+                            onPress={() => router.push('/add-trip')}
+                            style={[props.style, { justifyContent: 'center', alignItems: 'center' }]}
+                            activeOpacity={0.7}
+                        >
+                            <View style={{
+                                backgroundColor: '#7f22fe',
+                                width: 56,
+                                height: 56,
+                                borderRadius: 28,
+                                justifyContent: 'center',
+                                alignItems: 'center',
+                                marginBottom: Platform.OS === 'ios' ? 15 : 25,
+                                elevation: 5,
+                                shadowColor: '#000',
+                                shadowOffset: { width: 0, height: 2 },
+                                shadowOpacity: 0.3,
+                                shadowRadius: 3,
+                            }}>
+                                <AntDesign name="plus" size={32} color="white" />
+                            </View>
+                        </TouchableOpacity>
                     ),
                 }}
             />

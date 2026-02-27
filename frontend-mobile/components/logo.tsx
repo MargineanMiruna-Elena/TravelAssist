@@ -3,7 +3,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import MaskedView from '@react-native-masked-view/masked-view';
 
-const Logo = ({ className = "", style = {} }) => {
+const Logo = ({ name = "", className = "", style = {} }) => {
     const getSizeFromClassName = (className: string | string[]) => {
         const sizeMap = {
             'text-sm': 14,
@@ -51,7 +51,7 @@ const Logo = ({ className = "", style = {} }) => {
             </MaskedView>
 
             <Text style={[styles.assistText, { fontSize, marginLeft: fontSize * 0.2 }]}>
-                Assist
+                {name}
             </Text>
         </View>
     );

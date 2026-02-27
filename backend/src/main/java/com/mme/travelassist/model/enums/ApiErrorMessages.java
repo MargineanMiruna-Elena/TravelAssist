@@ -18,7 +18,8 @@ public enum ApiErrorMessages {
     USER_VALIDATION_ERROR("api-errors.user-validation-error"),
     CONSTRAINT_VIOLATION("api-errors.constraint-violation"),
     FORBIDDEN("api-errors.forbidden"),
-    UNAUTHORIZED("api-errors.unauthorized");
+    UNAUTHORIZED("api-errors.unauthorized"),
+    DESTINATION_NOT_FOUND("api-errors.destination-not-found-error");
 
     private final String code;
 

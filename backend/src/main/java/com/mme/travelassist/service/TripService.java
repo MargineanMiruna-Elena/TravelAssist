@@ -1,0 +1,46 @@
+package com.mme.travelassist.service;
+
+import com.mme.travelassist.dto.trips.TripPreferencesDTO;
+import com.mme.travelassist.exception.trip.DestinationNotFoundException;
+import com.mme.travelassist.model.Destination;
+import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.enums.Category;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface TripService {
+
+    /**
+     * Retrieves all destinations that match with the trip description
+     * @param preferences the trip details and preferences given by the user
+     * @return a list of destinations that match the preferences
+     */
+    List<Destination> getRecommendations(TripPreferencesDTO preferences);
+
+    /**
+     * Retrieves all attractions within the destination city
+     * @param destination the destination chosen by the user
+     * @return a list of attractions that are in the destination city
+     */
+    List<PoiCache> getAttractions(Destination destination, List<Category> interests);
+
+    /**
+     * Retrieves destination by destination id
+     * @param destinationId the unique identifier of the destination
+     * @return the destination that matches the id
+     * @throws DestinationNotFoundException if the destination with the id doesn't exist
+     */
+    Destination getDestinationById(UUID destinationId) throws DestinationNotFoundException;
+
+    /**
+     * Retrieves destinations by destination name
+     * @param name the name of the destination
+     * @return a list of destinations that match the name
+     */
+    List<Destination> searchDestinationsByName(String name);
+
+    List<String> searchCountriesByName(String name);
+
+    Destination findOrCreateDestination(String cityName);
+}
