@@ -13,7 +13,7 @@
 //         { id: "dashboard", label: "Dashboard", icon: Home },
 //         { id: "account", label: "Account", icon: User },
 //         { id: "map", label: "Map", icon: MapPin },
-//         { id: "localbuddy", label: "LocalBuddy", icon: MessageCircle },
+//         { id: "localbuddy", label: "TravelBuddy", icon: MessageCircle },
 //     ];
 //
 //     return (

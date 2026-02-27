@@ -5,7 +5,7 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import Logo from "@/components/logo";
-import { Plus, Calendar, MapPin, X, Clock, Map } from 'lucide-react-native';
+import { Calendar, X, Clock } from 'lucide-react-native';
 
 
 const TRIPS : Trip[] = [
@@ -71,11 +71,11 @@ export default function Dashboard() {
                     {TRIPS.map((trip) => (
                         <TouchableOpacity
                             key={trip.id}
-                            style={styles.card}
+                            className="w-[48%] h-[240px] rounded-3xl bg-white mb-2 overflow-hidden shadow-xl shadow-black/10"
                             onPress={() => openDetails(trip)}
                             activeOpacity={0.9}
                         >
-                            <Image source={{ uri: trip.image }} style={styles.cardImage} />
+                            <Image source={{ uri: trip.image }} className="absolute inset-0 w-full h-full" />
 
                             <View className="absolute top-3 left-3">
                                 <View className="bg-white self-start py-1 px-2 rounded-lg">
@@ -135,15 +135,6 @@ export default function Dashboard() {
 
 const styles = StyleSheet.create({
 
-    card: {
-        width: '48%', height: 240, borderRadius: 24,
-        backgroundColor: '#FFF', marginBottom: 16, overflow: 'hidden',
-        ...Platform.select({
-            ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 8 }, shadowOpacity: 0.1, shadowRadius: 10 },
-            android: { elevation: 4 }
-        })
-    },
-    cardImage: { ...StyleSheet.absoluteFillObject },
 
     modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' },
     modalContent: { backgroundColor: 'white', borderTopLeftRadius: 32, borderTopRightRadius: 32, height: height * 0.85, overflow: 'hidden' },
