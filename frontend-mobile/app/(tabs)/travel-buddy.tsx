@@ -7,9 +7,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import {Send, Plus, MapPin, X, CheckCircle2, BookmarkPlus, ChevronRight} from 'lucide-react-native';
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import Logo from "@/components/logo";
-import {BlurView} from "expo-blur";
 
-// --- Tipuri și Date ---
 interface Trip {
     id: string;
     destination: string;

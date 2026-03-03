@@ -98,7 +98,10 @@
     "where": {
       "title": "Wohin möchten Sie reisen?",
       "subtitle": "Wählen Sie ein Ziel oder seien Sie flexibel",
-      "textbox": "Ort eingeben...",
+      "city": "Stadt",
+      "cityPlaceholder": "Geben Sie eine Stadt ein...",
+      "country": "Land",
+      "countryPlaceholder": "Geben Sie ein Land ein...",
       "checkbox": "Ich bin flexibel"
     },
     "when": {
@@ -154,5 +157,8 @@
       "next": "Weiter",
       "finish": "Abschließen"
     }
+  },
+  "dashboard": {
+    "destinations": "Reiseziele"
   }
 }

@@ -7,6 +7,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import Logo from "@/components/logo";
 import { Calendar, X, Clock } from 'lucide-react-native';
 import TripService from "@/services/trip-service";
+import {useTranslation} from "react-i18next";
 
 interface Trip {
     id: string;
@@ -21,6 +22,7 @@ interface Trip {
 const { width, height } = Dimensions.get('window');
 
 export default function Dashboard() {
+    const {t} = useTranslation();
     const [trips, setTrips] = useState<Trip[]>([]);
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
@@ -76,7 +78,7 @@ export default function Dashboard() {
             <ScrollView showsVerticalScrollIndicator={false} className="px-5">
                 <View className="my-2">
                     <Logo name="Board" className="text-lg" />
-                    <Text className="text-base text-gray-500 mb-2 font-normal">{trips.length} destinations</Text>
+                    <Text className="text-base text-gray-500 mb-2 font-normal">{trips.length} {t('dashboard.destinations')}</Text>
                 </View>
 
                 <View className="flex-row flex-wrap justify-between">
