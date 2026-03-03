@@ -52,7 +52,7 @@ export interface AttractionResponse {
     longitude: bigint;
 }
 
-const API_URL = "http://172.20.10.12:8080/api/trips";
+const API_URL = "http://192.168.101.18:8080/api/trips";
 
 class TripService {
     async createTrip(payload: Trip): Promise<CreatedTrip> {

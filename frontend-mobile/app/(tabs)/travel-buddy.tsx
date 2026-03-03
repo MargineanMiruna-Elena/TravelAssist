@@ -7,6 +7,7 @@ import {LinearGradient} from 'expo-linear-gradient';
 import {Send, Plus, MapPin, X, CheckCircle2, BookmarkPlus, ChevronRight} from 'lucide-react-native';
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import Logo from "@/components/logo";
+import { ChatService } from '@/services/chat-service';
 
 interface Trip {
     id: string;
@@ -68,32 +69,47 @@ export default function TravelBuddy() {
     const [selectedContext, setSelectedContext] = useState<Trip | null>(null);
     const [isContextModalVisible, setIsContextModalVisible] = useState(false);
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
+    const [isTyping, setIsTyping] = useState(false);
 
     const scrollViewRef = useRef<ScrollView>(null);
 
-    const sendMessage = () => {
+    const sendMessage = async () => {
         if (inputText.trim() === '') return;
-        const newMessage: Message = {
+
+        const userMessageText = inputText;
+        const currentContext = selectedContext?.destination;
+
+        // Adăugăm mesajul user-ului
+        const newUserMessage: Message = {
             id: Date.now().toString(),
-            text: inputText,
+            text: userMessageText,
             sender: 'user',
-            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
-            contextId: selectedContext?.id
+            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         };
-        setMessages(prev => [...prev, newMessage]);
+
+        setMessages(prev => [...prev, newUserMessage]);
         setInputText('');
 
-        setTimeout(() => {
+        // Pornim animația de typing
+        setIsTyping(true);
+
+        try {
+            const aiResponseText = await ChatService.sendMessage(userMessageText, currentContext);
+
             const aiResponse: Message = {
                 id: (Date.now() + 1).toString(),
-                text: selectedContext
-                    ? `I've updated my search for ${selectedContext.destination}. Need tips for Oia?`
-                    : "I can help you plan! Try adding a trip as context for better results.",
+                text: aiResponseText,
                 sender: 'ai',
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
             };
+
             setMessages(prev => [...prev, aiResponse]);
-        }, 1000);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            // Oprim animația indiferent dacă a reușit sau a eșuat
+            setIsTyping(false);
+        }
     };
 
     return (
@@ -157,6 +173,22 @@ export default function TravelBuddy() {
                             )}
                         </View>
                     ))}
+
+                    {/* --- TYPING INDICATOR --- */}
+                    {isTyping && (
+                        <View className="items-start mb-6">
+                            <View className="flex-row items-end gap-2">
+                                <View className="w-8 h-8 rounded-full bg-violet-100 items-center justify-center mb-1">
+                                    <MaterialCommunityIcons name="robot" size={18} color="#7f22fe" />
+                                </View>
+                                <View className="bg-gray-100 px-4 py-3 rounded-2xl rounded-tl-none flex-row gap-1">
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ opacity: 0.6 }} />
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ opacity: 0.8 }} />
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" />
+                                </View>
+                            </View>
+                        </View>
+                    )}
                 </ScrollView>
 
                 {/* --- INPUT AREA --- */}
