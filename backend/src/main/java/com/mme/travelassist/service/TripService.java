@@ -1,15 +1,22 @@
 package com.mme.travelassist.service;
 
+import com.mme.travelassist.dto.trips.CreateTripRequest;
 import com.mme.travelassist.dto.trips.TripPreferencesDTO;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
+import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.model.Destination;
 import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.Trip;
 import com.mme.travelassist.model.enums.Category;
 
 import java.util.List;
 import java.util.UUID;
 
 public interface TripService {
+
+    Trip createTrip(CreateTripRequest createTripRequest) throws DestinationNotFoundException, UserNotFoundException;
+
+    List<Trip> getTrips(UUID id) throws UserNotFoundException;
 
     /**
      * Retrieves all destinations that match with the trip description

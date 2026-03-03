@@ -1,6 +1,31 @@
 import axios from 'axios';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserService from "@/services/user-service";
+
+export interface Trip {
+    userId: string;
+    startDate: string;
+    endDate: string;
+    selectedMonths: number[];
+    duration: string;
+    interests: string[];
+    additionalNotes: string;
+    selectedDestination: string;
+    selectedAttractions: string[];
+}
+
+export interface CreatedTrip {
+    id: string;
+}
+
+export interface DisplayTrip {
+    id: string;
+    destinationName: string;
+    destinationCountry: string;
+    destinationImageUrl: string;
+    startDate: string;
+    endDate: string;
+    status: string;
+}
 
 export interface TripPreferencesPayload {
     interests: string[];
@@ -27,9 +52,33 @@ export interface AttractionResponse {
     longitude: bigint;
 }
 
-const API_URL = "http://192.168.1.131:8080/api/trips";
+const API_URL = "http://192.168.101.18:8080/api/trips";
 
 class TripService {
+    async createTrip(payload: Trip): Promise<CreatedTrip> {
+        try {
+            const headers = await UserService.getAuthHeader();
+            const response = await axios.post<CreatedTrip>(`${API_URL}/create`, payload, { headers });
+            return response.data;
+        } catch (error) {
+            console.error("Error creating new trip:", error);
+            throw error;
+        }
+    }
+
+    async getTripsForUser(): Promise<DisplayTrip[]> {
+        try {
+            const headers = await UserService.getAuthHeader();
+            const user = await UserService.getCurrentUser();
+            const response = await axios.get<DisplayTrip[]>(`${API_URL}/all-trips/${user.id}`, { headers });
+            console.log(response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error fetching user's trips:", error);
+            throw error;
+        }
+    }
+
     async getRecommendedDestinations(payload: TripPreferencesPayload): Promise<DestinationResponse[]> {
         try {
             const headers = await UserService.getAuthHeader();
@@ -48,7 +97,8 @@ class TripService {
                 `${API_URL}/attractions/${destinationId}`,
                 interests,
                 { headers }
-            );            return response.data;
+            );
+            return response.data;
         } catch (error: any) {
             console.error("Error fetching attractions:", error);
             throw error;

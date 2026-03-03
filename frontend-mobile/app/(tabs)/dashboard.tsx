@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     View, Text, ScrollView, TouchableOpacity, StyleSheet,
     SafeAreaView, Image, Modal, Dimensions, Platform
@@ -6,57 +6,69 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import Logo from "@/components/logo";
 import { Calendar, X, Clock } from 'lucide-react-native';
-
-
-const TRIPS : Trip[] = [
-    {
-        id: '1',
-        destination: 'Santorini',
-        country: 'Greece',
-        date: '12 - 18 Oct 2026',
-        status: 'upcoming',
-        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=500',
-        description: 'Explorează străzile albe și bucură-te de cele mai frumoase apusuri din Oia.'
-    },
-    {
-        id: '2',
-        destination: 'Kyoto',
-        country: 'Japan',
-        date: '05 - 15 Nov 2026',
-        status: 'upcoming',
-        image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=500',
-        description: 'Vizită la templele budiste și grădinile zen în plin sezon de toamnă.'
-    },
-    {
-        id: '3',
-        destination: 'Taormina',
-        country: 'Italy',
-        date: '29 Jun - 3 Jul 2025',
-        status: 'completed',
-        image: 'https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSI9pUHhWwW4xm7p5VzYGP_kE5_Z4T4ffu4Ysgj8DoQKs_35feUF6FzZqewz9tkNd9POEaIilCJjWmQKUT6stzHcZM&s=19',
-        description: 'Vizită la templele budiste și grădinile zen în plin sezon de toamnă.'
-    }
-];
+import TripService from "@/services/trip-service";
 
 interface Trip {
     id: string;
-    destination: string;
-    country: string;
-    date: string;
-    status: 'upcoming' | 'completed';
-    image: string;
-    description: string;
+    destinationName: string;
+    destinationCountry: string;
+    destinationImageUrl: string;
+    startDate: string;
+    endDate: string;
+    status: string;
 }
 
 const { width, height } = Dimensions.get('window');
 
 export default function Dashboard() {
+    const [trips, setTrips] = useState<Trip[]>([]);
     const [selectedTrip, setSelectedTrip] = useState<Trip | null>(null);
     const [modalVisible, setModalVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        fetchTrips();
+    }, []);
+
+    const fetchTrips = async () => {
+        setIsLoading(true);
+        try {
+            // Presupunând că TripService.getTrips() returnează lista de excursii
+            const data = await TripService.getTripsForUser();
+            setTrips(data);
+        } catch (error) {
+            console.error("Error fetching trips:", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     const openDetails = (trip: Trip) => {
         setSelectedTrip(trip);
         setModalVisible(true);
+    };
+
+    const formatDateRange = (startStr: string, endStr: string) => {
+        if (!startStr || !endStr) return "";
+
+        const start = new Date(startStr);
+        const end = new Date(endStr);
+
+        const startDay = start.getDate();
+        const endDay = end.getDate();
+        const year = start.getFullYear();
+
+        // Obținem numele lunii (ex: "Mar")
+        const month = start.toLocaleString('default', { month: 'short' });
+
+        // Cazul în care ambele date sunt în aceeași lună (cel mai frecvent)
+        if (start.getMonth() === end.getMonth()) {
+            return `${startDay} - ${endDay} ${month} ${year}`;
+        }
+
+        // Cazul în care datele trec în luna următoare (ex: 29 Mar - 02 Apr 2026)
+        const endMonth = end.toLocaleString('default', { month: 'short' });
+        return `${startDay} ${month} - ${endDay} ${endMonth} ${year}`;
     };
 
     return (
@@ -64,18 +76,18 @@ export default function Dashboard() {
             <ScrollView showsVerticalScrollIndicator={false} className="px-5">
                 <View className="my-2">
                     <Logo name="Board" className="text-lg" />
-                    <Text className="text-base text-gray-500 mb-2 font-normal">{TRIPS.length} curated destinations</Text>
+                    <Text className="text-base text-gray-500 mb-2 font-normal">{trips.length} destinations</Text>
                 </View>
 
                 <View className="flex-row flex-wrap justify-between">
-                    {TRIPS.map((trip) => (
+                    {trips.map((trip) => (
                         <TouchableOpacity
                             key={trip.id}
                             className="w-[48%] h-[240px] rounded-3xl bg-white mb-2 overflow-hidden shadow-xl shadow-black/10"
                             onPress={() => openDetails(trip)}
                             activeOpacity={0.9}
                         >
-                            <Image source={{ uri: trip.image }} className="absolute inset-0 w-full h-full" />
+                            <Image source={{ uri: trip.destinationImageUrl }} className="absolute inset-0 w-full h-full" />
 
                             <View className="absolute top-3 left-3">
                                 <View className="bg-white self-start py-1 px-2 rounded-lg">
@@ -88,11 +100,11 @@ export default function Dashboard() {
                                 className="absolute left-0 right-0 bottom-0 h-[110] rounded-b-3xl justify-start px-4 py-7"
                                 locations={[0.1, 0.6, 0.8]}
                             >
-                                <Text className="text-lg text-white font-extrabold tracking-wider">{trip.destination}</Text>
-                                <Text className="text-sm text-white font-semibold">{trip.country}</Text>
+                                <Text className="text-lg text-white font-extrabold tracking-wider">{trip.destinationName}</Text>
+                                <Text className="text-sm text-white font-semibold">{trip.destinationCountry}</Text>
                                 <View className="flex-row items-center gap-1 pt-1">
                                     <Calendar size={14} color="rgba(255,255,255,0.85)" />
-                                    <Text className="text-xs text-white font-medium">{trip.date}</Text>
+                                    <Text className="text-xs text-white font-medium">{formatDateRange(trip.startDate, trip.endDate)}</Text>
                                 </View>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -105,18 +117,18 @@ export default function Dashboard() {
                     <View style={styles.modalContent}>
                         {selectedTrip && (
                             <>
-                                <Image source={{ uri: selectedTrip.image }} style={styles.modalImage} />
+                                <Image source={{ uri: selectedTrip.destinationImageUrl }} style={styles.modalImage} />
                                 <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
                                     <X color="white" size={24} />
                                 </TouchableOpacity>
 
                                 <View style={styles.modalBody}>
-                                    <Text style={styles.modalTitle}>{selectedTrip.destination}</Text>
+                                    <Text style={styles.modalTitle}>{selectedTrip.destinationName}</Text>
                                     <View style={styles.detailRow}>
                                         <Clock color="#7f22fe" size={18} />
-                                        <Text style={styles.detailText}>{selectedTrip.date}</Text>
+                                        <Text style={styles.detailText}>{formatDateRange(selectedTrip.startDate, selectedTrip.endDate)}</Text>
                                     </View>
-                                    <Text style={styles.descriptionText}>{selectedTrip.description}</Text>
+                                    <Text style={styles.descriptionText}></Text>
 
                                     <TouchableOpacity style={styles.actionButton}>
                                         <LinearGradient colors={['#4f39f6', '#7f22fe']} style={styles.fullGradient}>

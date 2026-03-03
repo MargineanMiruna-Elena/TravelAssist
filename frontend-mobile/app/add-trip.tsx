@@ -6,10 +6,13 @@ import {useTranslation} from "react-i18next";
 import {Ionicons} from "@expo/vector-icons";
 import TripService from "@/services/trip-service";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import UserService from "@/services/user-service";
+import {useRouter} from "expo-router";
 
 
 export default function AddTrip() {
     const {t} = useTranslation();
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState(0);
 
     const INTERESTS = [
@@ -251,6 +254,23 @@ export default function AddTrip() {
             setCurrentStep(currentStep + 1);
         } else {
             console.log('Final Trip Data:', tripData);
+
+            const user = await UserService.getCurrentUser();
+            if (!user?.id) throw new Error("No user ID found");
+
+            const newTrip = await TripService.createTrip({
+                userId: user.id,
+                startDate: tripData.startDate,
+                endDate: tripData.endDate,
+                selectedMonths: tripData.selectedMonths,
+                duration: tripData.duration,
+                interests: tripData.interests,
+                additionalNotes: tripData.additionalNotes,
+                selectedDestination: tripData.selectedDestination,
+                selectedAttractions: tripData.selectedAttractions
+            });
+            console.log('New Trip Data:', newTrip);
+            router.replace('/(tabs)/dashboard');
         }
     };
 

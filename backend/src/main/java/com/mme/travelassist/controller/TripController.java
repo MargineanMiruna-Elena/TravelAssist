@@ -1,13 +1,13 @@
 package com.mme.travelassist.controller;
 
-import com.mme.travelassist.dto.trips.DestinationResponseDTO;
-import com.mme.travelassist.dto.trips.PoiCacheResponseDTO;
-import com.mme.travelassist.dto.trips.TripPreferencesDTO;
+import com.mme.travelassist.dto.trips.*;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
+import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.mapper.PoiMapper;
 import com.mme.travelassist.mapper.TripMapper;
 import com.mme.travelassist.model.Destination;
 import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.Trip;
 import com.mme.travelassist.model.enums.Category;
 import com.mme.travelassist.service.TripService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +26,32 @@ class TripController {
     private final TripService tripService;
     private final TripMapper tripMapper;
     private final PoiMapper poiMapper;
+
+    @PostMapping("/create")
+    public ResponseEntity<CreateTripResponse> createTrip(@RequestBody CreateTripRequest createTripRequest) throws UserNotFoundException, DestinationNotFoundException {
+        Trip trip = tripService.createTrip(createTripRequest);
+        CreateTripResponse tripResponse = tripMapper.tripToCreateTripResponse(trip);
+        return ResponseEntity.ok(tripResponse);
+    }
+
+    @GetMapping("/all-trips/{id}")
+    public ResponseEntity<List<TripResponseDTO>> getTripsForUser(@PathVariable UUID id) throws UserNotFoundException {
+        List<Trip> trips = tripService.getTrips(id);
+        List<TripResponseDTO> tripsResponse = new ArrayList<>();
+        for (Trip t: trips) {
+            TripResponseDTO trd = new TripResponseDTO(
+                    t.getId(),
+                    t.getDestination().getLocalName(),
+                    t.getDestination().getCountry(),
+                    t.getDestination().getImageUrl(),
+                    t.getExactStartDate(),
+                    t.getExactEndDate(),
+                    t.getStatus()
+            );
+            tripsResponse.add(trd);
+        }
+        return ResponseEntity.ok(tripsResponse);
+    }
 
     /**
      * Retrieves a list of recommended destinations that match the user preferences
