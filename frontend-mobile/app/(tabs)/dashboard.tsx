@@ -1,17 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import {
-    View, Text, ScrollView, TouchableOpacity, StyleSheet,
-    SafeAreaView, Image, Modal, Dimensions, Platform
+    View, Text, ScrollView, TouchableOpacity, Image
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { LinearGradient } from 'expo-linear-gradient';
 import Logo from "@/components/logo";
-import { Calendar, X, Clock } from 'lucide-react-native';
+import { Calendar } from 'lucide-react-native';
 import TripService from "@/services/trip-service";
 import {useTranslation} from "react-i18next";
 import {formatDateRange} from "@/utils/formatDateRange";
-import {Trip} from "@/types/trip";
-
-const { width, height } = Dimensions.get('window');
+import {Trip} from "@/types/trip/trip";
+import TripDetailsModal from "@/components/trip-details/trip-detail-modal";
 
 export default function Dashboard() {
     const {t} = useTranslation();
@@ -27,7 +26,6 @@ export default function Dashboard() {
     const fetchTrips = async () => {
         setIsLoading(true);
         try {
-            // Presupunând că TripService.getTrips() returnează lista de excursii
             const data = await TripService.getTripsForUser();
             setTrips(data);
         } catch (error) {
@@ -41,8 +39,6 @@ export default function Dashboard() {
         setSelectedTrip(trip);
         setModalVisible(true);
     };
-
-
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -85,52 +81,11 @@ export default function Dashboard() {
                 </View>
             </ScrollView>
 
-            <Modal animationType="slide" transparent={true} visible={modalVisible}>
-                <View style={styles.modalOverlay}>
-                    <View style={styles.modalContent}>
-                        {selectedTrip && (
-                            <>
-                                <Image source={{ uri: selectedTrip.imageUrl }} style={styles.modalImage} />
-                                <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                                    <X color="white" size={24} />
-                                </TouchableOpacity>
-
-                                <View style={styles.modalBody}>
-                                    <Text style={styles.modalTitle}>{selectedTrip.destination}</Text>
-                                    <View style={styles.detailRow}>
-                                        <Clock color="#7f22fe" size={18} />
-                                        <Text style={styles.detailText}>{formatDateRange(selectedTrip.startDate, selectedTrip.endDate, selectedTrip.preferredMonths)}</Text>
-                                    </View>
-                                    <Text style={styles.descriptionText}></Text>
-
-                                    <TouchableOpacity style={styles.actionButton}>
-                                        <LinearGradient colors={['#4f39f6', '#7f22fe']} style={styles.fullGradient}>
-                                            <Text style={styles.actionButtonText}>View Full Itinerary</Text>
-                                        </LinearGradient>
-                                    </TouchableOpacity>
-                                </View>
-                            </>
-                        )}
-                    </View>
-                </View>
-            </Modal>
+            <TripDetailsModal
+                trip={selectedTrip}
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+            />
         </SafeAreaView>
     );
 }
-
-const styles = StyleSheet.create({
-
-
-    modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.7)', justifyContent: 'flex-end' },
-    modalContent: { backgroundColor: 'white', borderTopLeftRadius: 32, borderTopRightRadius: 32, height: height * 0.85, overflow: 'hidden' },
-    modalImage: { width: '100%', height: 300 },
-    closeButton: { position: 'absolute', top: 20, right: 20, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, padding: 8 },
-    modalBody: { padding: 24 },
-    modalTitle: { fontSize: 28, fontWeight: '800', color: '#1A1A1A' },
-    detailRow: { flexDirection: 'row', alignItems: 'center', gap: 10, marginTop: 15 },
-    detailText: { fontSize: 16, color: '#444', fontWeight: '600' },
-    descriptionText: { fontSize: 16, color: '#666', lineHeight: 24, marginTop: 20 },
-    actionButton: { marginTop: 30, borderRadius: 16, overflow: 'hidden' },
-    fullGradient: { paddingVertical: 16, alignItems: 'center' },
-    actionButtonText: { color: 'white', fontWeight: '700', fontSize: 16 }
-});

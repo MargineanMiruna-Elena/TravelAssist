@@ -3,6 +3,7 @@ import UserService from "@/services/user-service";
 import {CreateTripPayload} from "@/types/trip/create-trip-payload";
 import {CreatedTrip} from "@/types/trip/created-trip";
 import {Trip} from "@/types/trip/trip";
+import {PointOfInterest} from "@/types/trip/point-of-interest";
 
 export interface TripPreferencesPayload {
     interests: string[];
@@ -117,6 +118,18 @@ class TripService {
             { headers }
         );
         return res.data;
+    }
+
+    async updateTrip(id: string, pois: { pointsOfInterest: PointOfInterest[] }) {
+
+    }
+
+    async updateTripDates(id: string, dates: { startDate: string, endDate: string }) {
+
+    }
+
+    async deleteTrip(id: string) {
+
     }
 }
 

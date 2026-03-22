@@ -1,3 +1,5 @@
+import {PointOfInterest} from "@/types/trip/point-of-interest";
+
 export interface Trip {
     id: string;
     userId: string;
@@ -13,4 +15,6 @@ export interface Trip {
     interests: string[];
     freeTextPreferences: string;
     status: 'upcoming' | 'completed' | 'draft' | 'started';
+    pointsOfInterest: PointOfInterest[];
+    notes?: { id: string; text: string }[];
 }
