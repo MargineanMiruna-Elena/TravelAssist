@@ -157,5 +157,8 @@
       "next": "Next",
       "finish": "Finish"
     }
+  },
+  "dashboard": {
+    "destinations": "destinations"
   }
 }

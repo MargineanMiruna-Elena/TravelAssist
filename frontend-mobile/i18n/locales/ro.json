@@ -98,7 +98,10 @@
     "where": {
       "title": "Unde vrei să călătorești?",
       "subtitle": "Alege o destinație sau fii flexibil",
-      "textbox": "Introdu o locație...",
+      "city": "Oraș",
+      "cityPlaceholder": "Introdu un oraș...",
+      "country": "Țară",
+      "countryPlaceholder": "Introdu o țară...",
       "checkbox": "Sunt flexibil"
     },
     "when": {
@@ -154,5 +157,8 @@
       "next": "Înainte",
       "finish": "Finalizează"
     }
+  },
+  "dashboard": {
+    "destinations": "destinații"
   }
 }

@@ -4,15 +4,11 @@ import com.mme.travelassist.model.enums.Category;
 import com.mme.travelassist.model.enums.TripStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -38,7 +34,7 @@ public class Trip {
     private Destination destination;
 
     @Column(nullable = false)
-    private boolean isFlexibleDate;
+    private Boolean isFlexibleDate;
 
     @ElementCollection
     private Set<Integer> preferredMonths;
@@ -64,4 +60,17 @@ public class Trip {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TripStatus status;
+
+    public Trip(User user, Destination destination, Boolean isFlexibleDate, Set<Integer> monthSet, LocalDate start, LocalDate end, Integer duration, Set<Category> categorySet, String additionalNotes, TripStatus status) {
+        this.user = user;
+        this.destination = destination;
+        this.isFlexibleDate = isFlexibleDate;
+        this.preferredMonths = monthSet;
+        this.exactStartDate = start;
+        this.exactEndDate = end;
+        this.durationDays = duration;
+        this.interests = categorySet;
+        this.freeTextPreferences = additionalNotes;
+        this.status = status;
+    }
 }

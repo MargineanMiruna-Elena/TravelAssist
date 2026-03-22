@@ -6,10 +6,13 @@ import {useTranslation} from "react-i18next";
 import {Ionicons} from "@expo/vector-icons";
 import TripService from "@/services/trip-service";
 import DateTimePicker from '@react-native-community/datetimepicker';
+import UserService from "@/services/user-service";
+import {useRouter} from "expo-router";
 
 
 export default function AddTrip() {
     const {t} = useTranslation();
+    const router = useRouter();
     const [currentStep, setCurrentStep] = useState(0);
 
     const INTERESTS = [
@@ -125,9 +128,10 @@ export default function AddTrip() {
         const endDate = new Date(end);
         const months = new Set<number>();
 
-        const current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+        // Folosim un loop care merge de la luna de start la cea de final
+        let current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
         while (current <= endDate) {
-            months.add(current.getMonth() + 1);
+            months.add(current.getMonth() + 1); // +1 pentru a avea 1-12
             current.setMonth(current.getMonth() + 1);
         }
         return Array.from(months);
@@ -137,7 +141,7 @@ export default function AddTrip() {
         if (currentStep === 4) {
             setIsLoading(true);
             try {
-                if (tripData.dateType === 'specific' && tripData.startDate && tripData.endDate) {
+                if (tripData.startDate && tripData.endDate) {
                     updateTripData('selectedMonths', calculateSelectedMonths(tripData.startDate, tripData.endDate));
                 }
 
@@ -212,7 +216,7 @@ export default function AddTrip() {
                 setFallbackMessage(
                     tripData.location.trim()
                         ? fallbackCountry
-                            ? `"${tripData.location.trim()}" ${t("trip.fallback.location-not-found")} ${t("trip.fallback.country-destinations")} ${fallbackCountry}:`
+                            ? ` ${t("trip.fallback.location-not-found")} "${tripData.location.trim()}"+ ${t("trip.fallback.country-destinations")} ${fallbackCountry}:`
                             : `"${tripData.location.trim()}" ${t("trip.fallback.location-not-found")} ${t("trip.fallback.other-suggestions")}`
                         : null
                 );
@@ -251,6 +255,23 @@ export default function AddTrip() {
             setCurrentStep(currentStep + 1);
         } else {
             console.log('Final Trip Data:', tripData);
+
+            const user = await UserService.getCurrentUser();
+            if (!user?.id) throw new Error("No user ID found");
+
+            const newTrip = await TripService.createTrip({
+                userId: user.id,
+                startDate: tripData.startDate,
+                endDate: tripData.endDate,
+                selectedMonths: tripData.selectedMonths,
+                duration: tripData.duration,
+                interests: tripData.interests,
+                additionalNotes: tripData.additionalNotes,
+                selectedDestination: tripData.selectedDestination,
+                selectedAttractions: tripData.selectedAttractions
+            });
+            console.log('New Trip Data:', newTrip);
+            router.replace('/(tabs)/dashboard');
         }
     };
 
@@ -582,18 +603,24 @@ export default function AddTrip() {
                                                     const iso = date.toISOString().split('T')[0];
 
                                                     if (activePicker === 'start') {
-                                                        updateTripData('startDate', iso);
-                                                        if (tripData.endDate && new Date(tripData.endDate) < date) {
-                                                            updateTripData('endDate', '');
-                                                            updateTripData('selectedMonths', []);
-                                                        } else if (tripData.endDate) {
-                                                            updateTripData('selectedMonths', calculateSelectedMonths(iso, tripData.endDate));
-                                                        }
+                                                        const newEndDate = (tripData.endDate && new Date(tripData.endDate) < date) ? '' : tripData.endDate;
+
+                                                        const newMonths = newEndDate ? calculateSelectedMonths(iso, newEndDate) : [];
+
+                                                        setTripData(prev => ({
+                                                            ...prev,
+                                                            startDate: iso,
+                                                            endDate: newEndDate,
+                                                            selectedMonths: newMonths
+                                                        }));
                                                     } else {
-                                                        updateTripData('endDate', iso);
-                                                        if (tripData.startDate) {
-                                                            updateTripData('selectedMonths', calculateSelectedMonths(tripData.startDate, iso));
-                                                        }
+                                                        const newMonths = tripData.startDate ? calculateSelectedMonths(tripData.startDate, iso) : [];
+
+                                                        setTripData(prev => ({
+                                                            ...prev,
+                                                            endDate: iso,
+                                                            selectedMonths: newMonths
+                                                        }));
                                                     }
 
                                                     if (Platform.OS === 'android') setActivePicker(null);

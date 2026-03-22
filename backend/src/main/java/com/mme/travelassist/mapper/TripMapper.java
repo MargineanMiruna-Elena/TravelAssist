@@ -1,7 +1,10 @@
 package com.mme.travelassist.mapper;
 
+import com.mme.travelassist.dto.trips.CreateTripResponse;
 import com.mme.travelassist.dto.trips.DestinationResponseDTO;
+import com.mme.travelassist.dto.trips.TripResponseDTO;
 import com.mme.travelassist.model.Destination;
+import com.mme.travelassist.model.Trip;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
@@ -15,4 +18,5 @@ public interface TripMapper {
      */
     DestinationResponseDTO destinationToDestinationResponseDTO(Destination destination);
 
+    CreateTripResponse tripToCreateTripResponse(Trip trip);
 }

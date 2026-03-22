@@ -34,7 +34,7 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="local-buddy"
+                name="travel-buddy"
                 options={{
                     tabBarIcon: ({ color }) => (
                         <MaterialCommunityIcons name="robot-confused" size={32} color={color} />
