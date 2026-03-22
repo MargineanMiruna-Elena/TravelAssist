@@ -160,5 +160,9 @@
   },
   "dashboard": {
     "destinations": "Reiseziele"
+  },
+  "bot": {
+    "welcome-message": "Hallo! Ich bin TravelBuddy, dein persönlicher Reisebegleiter. Wo soll es als Nächstes hingehen? Ich kann dir helfen, Reiseziele zu finden, Geheimtipps zu entdecken oder deine perfekte Route zu planen. Sag mir einfach, wonach du suchst!",
+    "context": "Chat-Kontext auswählen",
   }
 }

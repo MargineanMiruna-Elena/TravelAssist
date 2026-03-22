@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
     View, Text, ScrollView, TextInput, TouchableOpacity,
     SafeAreaView, Image, KeyboardAvoidingView, Platform, Modal, Dimensions, Animated
@@ -7,108 +7,149 @@ import {LinearGradient} from 'expo-linear-gradient';
 import {Send, Plus, MapPin, X, CheckCircle2, BookmarkPlus, ChevronRight} from 'lucide-react-native';
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import Logo from "@/components/logo";
-import { ChatService } from '@/services/chat-service';
-
-interface Trip {
-    id: string;
-    destination: string;
-    country: string;
-    date: string;
-    status: 'upcoming' | 'completed';
-    image: string;
-    description: string;
-}
-
-interface Message {
-    id: string;
-    text: string;
-    sender: 'user' | 'ai';
-    timestamp: string;
-    contextId?: string;
-}
-
-const TRIPS: Trip[] = [
-    {
-        id: '1',
-        destination: 'Santorini',
-        country: 'Greece',
-        date: '12 - 18 Oct 2026',
-        status: 'upcoming',
-        image: 'https://images.unsplash.com/photo-1570077188670-e3a8d69ac5ff?q=80&w=500',
-        description: 'Explorează străzile albe.'
-    },
-    {
-        id: '2',
-        destination: 'Kyoto',
-        country: 'Japan',
-        date: '05 - 15 Nov 2026',
-        status: 'upcoming',
-        image: 'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=500',
-        description: 'Grădinile zen de toamnă.'
-    }
-];
-
-const CHAT_HISTORY = [
-    {id: 'h1', title: 'Vacation in Greece', date: 'Yesterday'},
-    {id: 'h2', title: 'Japan Itinerary', date: '2 days ago'},
-    {id: 'h3', title: 'Flight options Paris', date: 'Last week'},
-];
+import {ChatService} from '@/services/chat-service';
+import {useTranslation} from "react-i18next";
+import {Trip} from "@/types/trip/trip";
+import TripService from "@/services/trip-service";
+import {HistoryDrawer} from "@/components/history-drawer";
+import {ContextModal} from "@/components/context-modal";
+import {ChatSession} from "@/types/chat/chat-session";
+import UserService from "@/services/user-service";
+import {Message} from "@/types/chat/message";
 
 const {width} = Dimensions.get('window');
 
 export default function TravelBuddy() {
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            id: '1',
-            text: "Bună! Sunt TravelBuddy. Te pot ajuta cu detalii despre Santorini sau Kyoto!",
-            sender: 'ai',
-            timestamp: '10:00'
-        }
-    ]);
+    const {t} = useTranslation();
+
+    const [trips, setTrips] = useState<Trip[]>([]);
+    const [isLoadingTrips, setIsLoadingTrips] = useState(false);
+    const [messages, setMessages] = useState<Message[]>([]);
     const [inputText, setInputText] = useState('');
     const [selectedContext, setSelectedContext] = useState<Trip | null>(null);
     const [isContextModalVisible, setIsContextModalVisible] = useState(false);
     const [isHistoryVisible, setIsHistoryVisible] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
+    const [sessionId, setSessionId] = useState<string | null>(null);
+    const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
+    const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+    const [rememberedMessages, setRememberedMessages] = useState<Set<string>>(new Set());
+
 
     const scrollViewRef = useRef<ScrollView>(null);
+
+    const now = new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
+
+    useEffect(() => {
+        fetchUserTrips();
+    }, []);
+
+    const fetchUserTrips = async () => {
+        setIsLoadingTrips(true);
+        try {
+            const data = await TripService.getTripsForUser();
+            setTrips(data);
+        } catch (error) {
+            console.error("Failed to load trips for context:", error);
+        } finally {
+            setIsLoadingTrips(false);
+        }
+    };
+
+    const fetchChatHistory = async () => {
+        setIsLoadingHistory(true);
+        try {
+            const user = await UserService.getCurrentUser();
+            const data = await ChatService.getHistory(user.id);
+            setChatHistory(data);
+        } catch (error) {
+            console.error("Failed to load chat history:", error);
+        } finally {
+            setIsLoadingHistory(false);
+        }
+    };
 
     const sendMessage = async () => {
         if (inputText.trim() === '') return;
 
         const userMessageText = inputText;
-        const currentContext = selectedContext?.destination;
 
-        // Adăugăm mesajul user-ului
         const newUserMessage: Message = {
             id: Date.now().toString(),
             text: userMessageText,
             sender: 'user',
-            timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'}),
         };
 
         setMessages(prev => [...prev, newUserMessage]);
         setInputText('');
-
-        // Pornim animația de typing
         setIsTyping(true);
 
         try {
-            const aiResponseText = await ChatService.sendMessage(userMessageText, currentContext);
+            const chatResponse = await ChatService.sendMessage(
+                userMessageText,
+                sessionId,
+                selectedContext?.id
+            );
+
+            if (chatResponse?.sessionId) {
+                setSessionId(chatResponse.sessionId);
+            }
 
             const aiResponse: Message = {
                 id: (Date.now() + 1).toString(),
-                text: aiResponseText,
+                text: chatResponse?.aiText ?? '',
                 sender: 'ai',
-                timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
             };
 
             setMessages(prev => [...prev, aiResponse]);
         } catch (error) {
             console.error(error);
         } finally {
-            // Oprim animația indiferent dacă a reușit sau a eșuat
             setIsTyping(false);
+        }
+    };
+
+    const startNewChat = () => {
+        setMessages([]);
+        setSessionId(null);
+        setSelectedContext(null);
+        setIsHistoryVisible(false);
+    };
+
+    const loadSession = async (session: ChatSession) => {
+        setIsHistoryVisible(false);
+        setIsTyping(true);
+        try {
+            const msgs = await ChatService.getMessages(session.sessionId);
+            setMessages(msgs);
+            setSessionId(session.sessionId);
+
+            const alreadyRemembered = new Set(
+                msgs.filter(m => m.remembered).map(m => m.id)
+            );
+            setRememberedMessages(alreadyRemembered);
+
+            if (session.tripId) {
+                const trip = trips.find(t => t.id === session.tripId);
+                setSelectedContext(trip ?? null);
+            } else {
+                setSelectedContext(null);
+            }
+        } catch (error) {
+            console.error("Failed to load session:", error);
+        } finally {
+            setIsTyping(false);
+        }
+    };
+
+    const handleRemember = async (messageId: string) => {
+        try {
+            await ChatService.rememberMessage(messageId);
+            setRememberedMessages(prev => new Set(prev).add(messageId));  // ✅ adaugă la set
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -118,7 +159,10 @@ export default function TravelBuddy() {
             <View className="px-5 py-2 flex-row items-center justify-between border-b border-gray-100">
                 <Logo name="Buddy" className="text-xl"/>
                 <TouchableOpacity
-                    onPress={() => setIsHistoryVisible(true)}
+                    onPress={() => {
+                        fetchChatHistory();
+                        setIsHistoryVisible(true);
+                    }}
                     className="p-3 bg-violet-100 rounded-full active:bg-violet-200"
                 >
                     <Ionicons name="chatbubbles-outline" size={24} color="#7f22fe"/>
@@ -142,35 +186,66 @@ export default function TravelBuddy() {
                 <ScrollView
                     ref={scrollViewRef}
                     className="flex-1 px-5 pt-4"
-                    onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
+                    onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({animated: true})}
                     showsVerticalScrollIndicator={false}
                 >
+                    <View className="flex-row items-end gap-2 mb-6">
+                        <View className="w-8 h-8 rounded-full bg-violet-100 items-center justify-center">
+                            <MaterialCommunityIcons name="robot" size={18} color="#7f22fe"/>
+                        </View>
+                        <View className="max-w-[85%] px-4 py-3 rounded-2xl bg-violet-100 rounded-bl-none">
+                            <Text
+                                className="text-[15px] leading-5 text-gray-800">{t('bot.welcome-message')}
+                            </Text>
+                        </View>
+                    </View>
                     {messages.map((msg) => (
                         <View key={msg.id} className={`mb-6 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                             <View className="flex-row items-end gap-2">
                                 {msg.sender === 'ai' && (
-                                    <View className="w-8 h-8 rounded-full bg-violet-100 items-center justify-center mb-1">
-                                        <MaterialCommunityIcons name="robot" size={18} color="#7f22fe" />
+                                    <View className="w-8 h-8 rounded-full bg-violet-100 items-center justify-center">
+                                        <MaterialCommunityIcons name="robot" size={18} color="#7f22fe"/>
                                     </View>
                                 )}
                                 <View className={`max-w-[85%] px-4 py-3 rounded-2xl ${
-                                    msg.sender === 'user' ? 'bg-violet-600 rounded-tr-none' : 'bg-gray-100 rounded-tl-none'
+                                    msg.sender === 'user' ? 'bg-violet-600 rounded-br-none' : 'bg-violet-100 rounded-bl-none'
                                 }`}>
-                                    <Text className={`text-[15px] leading-5 ${msg.sender === 'user' ? 'text-white' : 'text-gray-800'}`}>{msg.text}</Text>
-                                    <Text className={`text-[10px] mt-1 ${msg.sender === 'user' ? 'text-violet-200' : 'text-gray-400'}`}>{msg.timestamp}</Text>
+                                    <Text
+                                        className={`text-[15px] leading-5 ${msg.sender === 'user' ? 'text-white' : 'text-gray-800'}`}
+                                        numberOfLines={0}
+                                        ellipsizeMode="clip"
+                                    >
+                                        {msg.text}
+                                    </Text>
+                                    <View
+                                        className="flex-row justify-between mt-2"
+                                    >
+                                        {msg.sender === 'ai' && selectedContext && (
+                                            <TouchableOpacity
+                                                onPress={() => !rememberedMessages.has(msg.id) && handleRemember(msg.id)}
+                                                className="flex-row gap-1 pt-2 bg-violet-100"
+                                                disabled={rememberedMessages.has(msg.id)}
+                                            >
+                                                {msg.remembered ? (
+                                                    <View className="flex-row gap-1 pt-2">
+                                                        <CheckCircle2 size={14} color="#7f22fe"/>
+                                                        <Text className="text-[12px] text-violet-700 font-bold">Remembered</Text>
+                                                    </View>
+                                                ) : (
+                                                    <View className="flex-row gap-1 pt-2">
+                                                        <BookmarkPlus size={14} color="#7f22fe"/>
+                                                        <Text className="text-[12px] text-violet-700 font-bold">Remember in context</Text>
+                                                    </View>
+                                                )}
+                                            </TouchableOpacity>
+                                        )}
+                                        <Text
+                                            className={`text-[10px] mt-1 self-end ${msg.sender === 'user' ? 'text-violet-200' : 'text-gray-400'}`}>{msg.timestamp}</Text>
+                                    </View>
                                 </View>
                             </View>
 
-                            {/* Buton Remember Context sub mesajele AI */}
-                            {msg.sender === 'ai' && !selectedContext && (
-                                <TouchableOpacity
-                                    onPress={() => setIsContextModalVisible(true)}
-                                    className="flex-row items-center gap-1 mt-2 ml-10 border border-violet-200 px-3 py-1.5 rounded-full bg-violet-50/50"
-                                >
-                                    <BookmarkPlus size={12} color="#7f22fe" />
-                                    <Text className="text-[11px] text-violet-700 font-bold">Remember this in context</Text>
-                                </TouchableOpacity>
-                            )}
+
                         </View>
                     ))}
 
@@ -179,12 +254,14 @@ export default function TravelBuddy() {
                         <View className="items-start mb-6">
                             <View className="flex-row items-end gap-2">
                                 <View className="w-8 h-8 rounded-full bg-violet-100 items-center justify-center mb-1">
-                                    <MaterialCommunityIcons name="robot" size={18} color="#7f22fe" />
+                                    <MaterialCommunityIcons name="robot" size={18} color="#7f22fe"/>
                                 </View>
                                 <View className="bg-gray-100 px-4 py-3 rounded-2xl rounded-tl-none flex-row gap-1">
-                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ opacity: 0.6 }} />
-                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ opacity: 0.8 }} />
-                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" />
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                                          style={{opacity: 0.6}}/>
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"
+                                          style={{opacity: 0.8}}/>
+                                    <View className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce"/>
                                 </View>
                             </View>
                         </View>
@@ -196,10 +273,12 @@ export default function TravelBuddy() {
                     className="px-4 py-3 bg-transparent"
                 >
                     <View className="flex-row items-center gap-2">
-                        <TouchableOpacity onPress={() => setIsContextModalVisible(true)} className="w-11 h-11 bg-gray-50 rounded-full items-center justify-center border border-gray-200">
-                            <Plus size={22} color={selectedContext ? "#7f22fe" : "#9ca3af"} />
+                        <TouchableOpacity onPress={() => setIsContextModalVisible(true)}
+                                          className="w-11 h-11 bg-gray-50 rounded-full items-center justify-center border border-gray-200">
+                            <Plus size={22} color={selectedContext ? "#7f22fe" : "#9ca3af"}/>
                         </TouchableOpacity>
-                        <View className="flex-1 flex-row items-center bg-gray-50 rounded-3xl px-4 py-1 border border-gray-200">
+                        <View
+                            className="flex-1 flex-row items-center bg-gray-50 rounded-3xl px-4 py-1 border border-gray-200">
                             <TextInput
                                 className="flex-1 min-h-[40px] text-gray-800 py-2"
                                 placeholder="Mesajul tău..."
@@ -208,8 +287,9 @@ export default function TravelBuddy() {
                                 multiline
                             />
                             <TouchableOpacity onPress={sendMessage} disabled={!inputText.trim()}>
-                                <LinearGradient colors={['#4f39f6', '#7f22fe']} className="w-9 h-9 rounded-full items-center justify-center">
-                                    <Send size={16} color="white" />
+                                <LinearGradient colors={['#4f39f6', '#7f22fe']}
+                                                className="w-9 h-9 rounded-full items-center justify-center">
+                                    <Send size={16} color="white"/>
                                 </LinearGradient>
                             </TouchableOpacity>
                         </View>
@@ -218,66 +298,28 @@ export default function TravelBuddy() {
             </KeyboardAvoidingView>
 
             {/* --- RIGHT HISTORY PANEL (DRAWER) --- */}
-            <Modal visible={isHistoryVisible} transparent animationType="fade">
-                <View className="flex-1 flex-row">
-                    <TouchableOpacity className="flex-1 bg-black/30" onPress={() => setIsHistoryVisible(false)}/>
-                    <Animated.View style={{width: width * 0.75}} className="bg-white h-full shadow-2xl p-6 pt-12">
-                        <View className="flex-row justify-between items-center mb-8">
-                            <Text className="text-xl font-extrabold">History</Text>
-                            <TouchableOpacity onPress={() => setIsHistoryVisible(false)}><X size={24}
-                                                                                            color="black"/></TouchableOpacity>
-                        </View>
-                        <ScrollView>
-                            {CHAT_HISTORY.map(chat => (
-                                <TouchableOpacity key={chat.id}
-                                                  className="flex-row items-center p-4 bg-gray-50 rounded-2xl mb-3">
-                                    <View className="flex-1">
-                                        <Text className="font-bold text-gray-900" numberOfLines={1}>{chat.title}</Text>
-                                        <Text className="text-gray-400 text-xs">{chat.date}</Text>
-                                    </View>
-                                    <ChevronRight size={16} color="#9ca3af"/>
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                        <TouchableOpacity className="mt-auto bg-violet-600 p-4 rounded-2xl items-center">
-                            <Text className="text-white font-bold">New Chat</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
-                </View>
-            </Modal>
+            <HistoryDrawer
+                isVisible={isHistoryVisible}
+                onClose={() => setIsHistoryVisible(false)}
+                history={chatHistory}
+                isLoading={isLoadingHistory}
+                onNewChat={startNewChat}
+                onSelectSession={loadSession}
+            />
 
             {/* --- CONTEXT SELECTION MODAL --- */}
-            <Modal animationType="slide" transparent visible={isContextModalVisible}>
-                <View className="flex-1 bg-black/40 justify-end">
-                    <View className="bg-white rounded-t-[32px] p-6 h-[50%]">
-                        <View className="flex-row justify-between items-center mb-6">
-                            <Text className="text-xl font-extrabold">Select Trip Context</Text>
-                            <TouchableOpacity onPress={() => setIsContextModalVisible(false)}
-                                              className="p-2 bg-gray-100 rounded-full"><X size={20}
-                                                                                          color="black"/></TouchableOpacity>
-                        </View>
-                        <ScrollView showsVerticalScrollIndicator={false}>
-                            {TRIPS.map((trip) => (
-                                <TouchableOpacity
-                                    key={trip.id}
-                                    onPress={() => {
-                                        setSelectedContext(trip);
-                                        setIsContextModalVisible(false);
-                                    }}
-                                    className={`flex-row items-center p-4 mb-3 rounded-2xl border ${selectedContext?.id === trip.id ? 'border-violet-500 bg-violet-50' : 'border-gray-100 bg-gray-50'}`}
-                                >
-                                    <Image source={{uri: trip.image}} className="w-12 h-12 rounded-xl mr-4"/>
-                                    <View className="flex-1">
-                                        <Text className="font-bold text-gray-900">{trip.destination}</Text>
-                                        <Text className="text-gray-500 text-xs">{trip.date}</Text>
-                                    </View>
-                                    <MapPin size={18} color={selectedContext?.id === trip.id ? "#7f22fe" : "#9ca3af"}/>
-                                </TouchableOpacity>
-                            ))}
-                        </ScrollView>
-                    </View>
-                </View>
-            </Modal>
+            <ContextModal
+                isVisible={isContextModalVisible}
+                onClose={() => setIsContextModalVisible(false)}
+                trips={trips}
+                isLoading={isLoadingTrips}
+                selectedContextId={selectedContext?.id}
+                onSelectContext={(trip) => {
+                    setSelectedContext(trip);
+                    setIsContextModalVisible(false);
+                }}
+                t={t}
+            />
         </SafeAreaView>
     );
 }

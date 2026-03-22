@@ -41,11 +41,18 @@ class TripController {
         for (Trip t: trips) {
             TripResponseDTO trd = new TripResponseDTO(
                     t.getId(),
+                    t.getUser().getId(),
                     t.getDestination().getLocalName(),
                     t.getDestination().getCountry(),
+                    t.getDestination().getLatitude(),
+                    t.getDestination().getLongitude(),
                     t.getDestination().getImageUrl(),
+                    t.getPreferredMonths(),
                     t.getExactStartDate(),
                     t.getExactEndDate(),
+                    t.getDurationDays(),
+                    t.getInterests(),
+                    t.getFreeTextPreferences(),
                     t.getStatus()
             );
             tripsResponse.add(trd);
@@ -66,9 +73,7 @@ class TripController {
 
         for (Destination dest : destinationList) {
             DestinationResponseDTO d = tripMapper.destinationToDestinationResponseDTO(dest);
-            System.out.println(d);
             destinationResponseDTOList.add(d);
-            System.out.println(d.getName());
         }
 
         return ResponseEntity.ok(destinationResponseDTOList);

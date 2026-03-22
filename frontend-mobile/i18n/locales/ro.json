@@ -160,5 +160,9 @@
   },
   "dashboard": {
     "destinations": "destinații"
+  },
+  "bot": {
+    "welcome-message": "Salut! Sunt TravelBuddy, ghidul tău personal de călătorie. Încotro pornim? Te pot ajuta să găsești destinații, să descoperi locuri spectaculoase sau să îți planifici itinerariul perfect. Spune-mi doar ce cauți!",
+    "context": "Selectează contextul conversației",
   }
 }
