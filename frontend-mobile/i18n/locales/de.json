@@ -71,5 +71,88 @@
     "explanation": "Diese Aktion ist dauerhaft und kann nicht rückgängig gemacht werden.",
     "yes": "Ja",
     "no": "Nein"
+  },
+  "trip": {
+    "beach": "Strand",
+    "culture": "Kultur",
+    "city-break": "Städtereise",
+    "nature": "Natur",
+    "nightlife": "Nachtleben",
+    "gastronomy": "Gastronomie",
+    "adventure": "Abenteuer",
+    "history": "Geschichte",
+    "shopping": "Shopping",
+    "family-friendly": "Familienfreundlich",
+    "jan": "Januar",
+    "feb": "Februar",
+    "mar": "März",
+    "apr": "April",
+    "may": "Mai",
+    "jun": "Juni",
+    "jul": "Juli",
+    "aug": "August",
+    "sep": "September",
+    "oct": "Oktober",
+    "nov": "November",
+    "dec": "Dezember",
+    "where": {
+      "title": "Wohin möchten Sie reisen?",
+      "subtitle": "Wählen Sie ein Ziel oder seien Sie flexibel",
+      "textbox": "Ort eingeben...",
+      "checkbox": "Ich bin flexibel"
+    },
+    "when": {
+      "title": "Wann möchten Sie reisen?",
+      "subtitle": "Wählen Sie einen Zeitraum oder die bevorzugten Monate",
+      "period": "Bestimmter Zeitraum",
+      "months": "Monate",
+      "departure-date": "Hinflugdatum",
+      "return-date": "Rückflugdatum",
+      "select-date": "Wählen Sie ein Datum",
+      "preferred-months": "Wählen Sie die bevorzugten Monate"
+    },
+    "how-long": {
+      "title": "Wie lange möchten Sie bleiben?",
+      "subtitle": "Wählen Sie aus, wie viele Tage Sie verreisen möchten",
+      "textbox": "Anzahl der Tage eingeben...",
+      "days": "Tage"
+    },
+    "interests": {
+      "title": "Wofür interessieren Sie sich?",
+      "subtitle": "Wählen Sie die Kategorien von Aktivitäten, die Sie interessieren"
+    },
+    "preferences": {
+      "title": "Haben Sie weitere Wünsche?",
+      "subtitle": "Erzählen Sie mir mehr über Ihre Reisepläne",
+      "example": "z.B.: Ich bevorzuge 4-Sterne-Hotels, möchte Touristenmassen meiden, interessiere mich für lokale Festivals...",
+      "summary": "Reisezusammenfassung:",
+      "destination": "Zielort: ",
+      "flexible": "Flexibel",
+      "period": "Zeitraum: ",
+      "unconfigured": "Nicht konfiguriert",
+      "duration": "Dauer: ",
+      "day": "Tag",
+      "interests": "Interessen: ",
+      "not-selected": "Nichts ausgewählt"
+    },
+    "destinations": {
+      "title": "Vorschläge für Sie",
+      "subtitle": "Wählen Sie ein Reiseziel, das Sie inspiriert"
+    },
+    "attractions": {
+      "title": "Attraktionen auswählen",
+      "subtitle": "Wählen Sie mindestens einen Ort aus, den Sie gerne sehen würden"
+    },
+    "fallback": {
+      "country-destinations": "Hier sind einige der am besten bewerteten Reiseziele ab",
+      "not-found": "Es wurde kein Land mit diesem Namen gefunden: ",
+      "other-suggestions": "Hier sind weitere Reiseziele, die zu deinem Stil passen.",
+      "location-not-found": "Es wurde kein Reiseziel mit diesem Namen gefunden: "
+    },
+    "buttons": {
+      "prev": "Zurück",
+      "next": "Weiter",
+      "finish": "Abschließen"
+    }
   }
 }

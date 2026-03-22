@@ -1,6 +1,6 @@
 import "../i18n/i18n";
 import {useEffect} from "react";
-import {Slot, useRouter, useSegments} from "expo-router";
+import {Slot, Stack, useRouter, useSegments} from "expo-router";
 import AuthProvider from "@/context/AuthProvider";
 import {PaperProvider} from 'react-native-paper';
 import {useAuth} from "@/hooks/use-auth";
@@ -28,7 +28,25 @@ function RootLayoutNav() {
     return (
         <>
             <StatusBar style="dark" />
-            <Slot />
+            <Stack>
+                <Stack.Screen
+                    name="auth"
+                    options={{ headerShown: false }}
+                />
+
+                <Stack.Screen
+                    name="(tabs)"
+                    options={{ headerShown: false }}
+                />
+
+                <Stack.Screen
+                    name="add-trip"
+                    options={{
+                        presentation: 'modal',
+                        headerShown: false
+                    }}
+                />
+            </Stack>
         </>
     );
 }

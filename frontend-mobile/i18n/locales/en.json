@@ -71,5 +71,91 @@
     "explanation": "This action is permanent and cannot be reversed.",
     "yes": "Yes",
     "no": "No"
+  },
+  "trip": {
+    "beach": "Beach",
+    "culture": "Culture",
+    "city-break": "City Break",
+    "nature": "Nature",
+    "nightlife": "Nightlife",
+    "gastronomy": "Gastronomy",
+    "adventure": "Adventure",
+    "history": "History",
+    "shopping": "Shopping",
+    "family-friendly": "Family friendly",
+    "jan": "January",
+    "feb": "February",
+    "mar": "March",
+    "apr": "April",
+    "may": "May",
+    "jun": "June",
+    "jul": "July",
+    "aug": "August",
+    "sep": "September",
+    "oct": "October",
+    "nov": "November",
+    "dec": "December",
+    "where": {
+      "title": "Where do you want to travel?",
+      "subtitle": "Choose a destination or be flexible",
+      "city": "City",
+      "cityPlaceholder": "Type a city...",
+      "country": "Country",
+      "countryPlaceholder": "Type a country...",
+      "checkbox": "I'm flexible"
+    },
+    "when": {
+      "title": "When do you want to travel?",
+      "subtitle": "Choose a specific period or the preferred months",
+      "period": "Specific period",
+      "months": "Months",
+      "departure-date": "Departure date",
+      "return-date": "Return date",
+      "select-date": "Select a date",
+      "preferred-months": "Select the preferred months"
+    },
+    "how-long": {
+      "title": "How long are you planning to stay?",
+      "subtitle": "Choose how many days you want to spend on your trip",
+      "textbox": "Type the number of days...",
+      "days": "days"
+    },
+    "interests": {
+      "title": "What are you interested in?",
+      "subtitle": "Choose the categories of activities you are interested in"
+    },
+    "preferences": {
+      "title": "Any other preferences?",
+      "subtitle": "Tell me more about your travel plans",
+      "example": "ex: I prefer 4-star hotels, I’d like to stay away from tourist traps, I’m interested in local festivals...",
+      "summary": "Trip summary:",
+      "destination": "Destination: ",
+      "flexible": "Flexible",
+      "period": "Period: ",
+      "unconfigured": "Unconfigured",
+      "duration": "Duration: ",
+      "day": "day",
+      "interests": "Interests: ",
+      "not-selected": "Nothing selected"
+    },
+    "destinations": {
+      "title": "Suggested for You",
+      "subtitle": "Pick a destination that inspires you"
+    },
+    "attractions": {
+      "title": "Select Attractions",
+      "subtitle": "Choose at least one place you would love to see"
+    },
+    "fallback": {
+      "country-destinations": "Here are some top rated destinations from",
+      "not-found": "No country with this name was found: ",
+      "other-suggestions": "Here are some other destinations that match your vibe.",
+      "location-not-found": "No destination with this name was found: "
+    },
+    "buttons": {
+      "prev": "Previous",
+      "next": "Next",
+      "finish": "Finish"
+    }
   }
 }
