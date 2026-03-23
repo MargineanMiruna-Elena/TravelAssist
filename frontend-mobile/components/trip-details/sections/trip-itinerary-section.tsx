@@ -20,16 +20,16 @@ export default function TripItinerarySection({ onGenerate }: Props) {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.titleRow}>
-                <Sparkles size={16} color="#7f22fe" />
-                <Text style={styles.sectionTitle}>Itinerary</Text>
+        <View className="px-5 py-4 border-b border-gray-100">
+            <View className="flex-row items-center gap-2">
+                <Sparkles size={18} color="#7f22fe" />
+                <Text className="text-base font-bold text-black tracking-wider">ITINERARY</Text>
             </View>
-            <Text style={styles.description}>
-                Generate a day-by-day itinerary based on your destinations and points of interest.
+            <Text className="text-sm font-normal text-gray-500 w-full self-center my-1">
+                Generate a day-by-day itinerary based on your preferences and points of interest.
             </Text>
             <TouchableOpacity
-                style={styles.button}
+                className="rounded-2xl overflow-hidden mt-2"
                 onPress={handlePress}
                 disabled={loading}
                 activeOpacity={0.85}
@@ -38,15 +38,15 @@ export default function TripItinerarySection({ onGenerate }: Props) {
                     colors={['#4f39f6', '#7f22fe']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
-                    style={styles.gradient}
+                    className="py-3"
                 >
                     {loading ? (
                         <ActivityIndicator color="white" size="small" />
                     ) : (
-                        <>
+                        <View className="flex-row items-center justify-center gap-1">
                             <Sparkles size={18} color="white" />
-                            <Text style={styles.buttonText}>Generate Itinerary</Text>
-                        </>
+                            <Text className="text-base font-bold text-white">Generate Itinerary</Text>
+                        </View>
                     )}
                 </LinearGradient>
             </TouchableOpacity>
@@ -55,10 +55,6 @@ export default function TripItinerarySection({ onGenerate }: Props) {
 }
 
 const styles = StyleSheet.create({
-    container: { paddingHorizontal: 20, paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-    titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 10 },
-    sectionTitle: { fontSize: 13, fontWeight: '700', color: '#1a1a1a', textTransform: 'uppercase', letterSpacing: 1 },
-    description: { fontSize: 14, color: '#888', lineHeight: 20, marginBottom: 16 },
     button: { borderRadius: 16, overflow: 'hidden' },
     gradient: {
         flexDirection: 'row', alignItems: 'center', justifyContent: 'center',

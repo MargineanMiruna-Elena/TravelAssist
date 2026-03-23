@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, ActivityIndicator } from 'react-native';
-import { CloudSun, Thermometer, Droplets, Wind, Info } from 'lucide-react-native';
-import { Trip } from '@/types/trip/trip';
-
-interface Props {
-    trip: Trip;
-}
-
-interface DayWeather {
-    date: string;
-    tempMax: number;
-    tempMin: number;
-    precipitationSum: number;
-    windspeedMax: number;
-    weatherCode: number;
-}
+import { CloudSun, Droplets, Wind, Info } from 'lucide-react-native';
+import {WeatherSectionProps} from "@/types/props/trip-details-modal-props";
+import {DayWeather} from "@/types/trip/day-weather";
 
 const WMO_ICONS: Record<number, string> = {
     0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️',
@@ -52,7 +40,7 @@ async function fetchWeather(
     }));
 }
 
-export default function TripWeatherSection({ trip }: Props) {
+export default function TripWeatherSection({ trip }: WeatherSectionProps) {
     const hasExactDates = !!trip.startDate && !!trip.endDate;
     const hasPOI = trip.pointsOfInterest && trip.pointsOfInterest.length > 0;
 
@@ -71,57 +59,55 @@ export default function TripWeatherSection({ trip }: Props) {
     }, [trip.startDate, trip.endDate, trip.pointsOfInterest]);
 
     return (
-        <View style={styles.container}>
-            <View style={styles.titleRow}>
-                <CloudSun size={16} color="#7f22fe" />
-                <Text style={styles.sectionTitle}>Weather Forecast</Text>
+        <View className="px-5 py-4 border-b border-gray-100">
+            <View className="flex-row items-center gap-2">
+                <CloudSun size={18} color="#7f22fe" />
+                <Text className="text-base font-bold text-black tracking-wider">WEATHER FORECAST</Text>
             </View>
 
             {!hasExactDates && (
-                <View style={styles.hintBox}>
-                    <Info size={15} color="#f59e0b" />
-                    <Text style={styles.hintText}>
+                <View className="flex-row items-start justify-start gap-1 bg-blue-50 rounded-xl border border-blue-700 p-2 mt-2">
+                    <Info size={16} color="blue" />
+                    <Text className="text-sm font-normal text-blue-700">
                         Set exact travel dates to see weather predictions for your trip.
                     </Text>
                 </View>
             )}
 
-            {hasExactDates && !hasPOI && (
-                <View style={styles.hintBox}>
-                    <Info size={15} color="#f59e0b" />
-                    <Text style={styles.hintText}>
-                        Add at least one point of interest to load weather for that location.
-                    </Text>
-                </View>
+            {hasExactDates && loading && (
+                <ActivityIndicator color="#7f22fe" className="my-4" />
             )}
 
-            {hasExactDates && hasPOI && loading && (
-                <ActivityIndicator color="#7f22fe" style={{ marginVertical: 16 }} />
+            {hasExactDates && error && (
+                <Text className="text-sm font-normal text-red-500">{error}</Text>
             )}
 
-            {hasExactDates && hasPOI && error && (
-                <Text style={styles.errorText}>{error}</Text>
-            )}
-
-            {hasExactDates && hasPOI && !loading && !error && weather.length > 0 && (
-                <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.scroll}>
+            {hasExactDates && !loading && !error && weather.length > 0 && (
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    className="mt-3"
+                >
                     {weather.map(day => (
-                        <View key={day.date} style={styles.dayCard}>
-                            <Text style={styles.dayDate}>
+                        <View
+                            key={day.date}
+                            className="bg-white w-[90px] mr-2 rounded-xl px-2 py-3 items-center border border-gray-300"
+                        >
+                            <Text className="text-xs font-semibold text-black text-center mb-2">
                                 {new Date(day.date).toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })}
                             </Text>
-                            <Text style={styles.icon}>{weatherIcon(day.weatherCode)}</Text>
-                            <View style={styles.tempRow}>
-                                <Text style={styles.tempMax}>{day.tempMax}°</Text>
-                                <Text style={styles.tempMin}>{day.tempMin}°</Text>
+                            <Text className="text-4xl mb-2">{weatherIcon(day.weatherCode)}</Text>
+                            <View className="flex-row gap-1 mb-2">
+                                <Text className="text-sm text-black font-bold">{day.tempMax}°</Text>
+                                <Text className="text-sm text-gray-500 font-normal">{day.tempMin}°</Text>
                             </View>
-                            <View style={styles.metaRow}>
-                                <Droplets size={11} color="#60a5fa" />
-                                <Text style={styles.metaText}>{day.precipitationSum}mm</Text>
+                            <View className="flex-row items-center gap-1">
+                                <Droplets size={12} color="dodgerblue" />
+                                <Text className="text-xs text-gray-500">{day.precipitationSum}mm</Text>
                             </View>
-                            <View style={styles.metaRow}>
-                                <Wind size={11} color="#94a3b8" />
-                                <Text style={styles.metaText}>{day.windspeedMax}km/h</Text>
+                            <View className="flex-row items-center gap-1">
+                                <Wind size={12} color="gray" />
+                                <Text className="text-xs text-gray-500">{day.windspeedMax}km/h</Text>
                             </View>
                         </View>
                     ))}
@@ -130,32 +116,3 @@ export default function TripWeatherSection({ trip }: Props) {
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { paddingHorizontal: 20, paddingVertical: 18, borderBottomWidth: 1, borderBottomColor: '#f0f0f0' },
-    titleRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 14 },
-    sectionTitle: { fontSize: 13, fontWeight: '700', color: '#1a1a1a', textTransform: 'uppercase', letterSpacing: 1 },
-
-    hintBox: {
-        flexDirection: 'row', alignItems: 'flex-start', gap: 8,
-        backgroundColor: '#fffbeb', borderRadius: 12, padding: 12,
-        borderWidth: 1, borderColor: '#fde68a',
-    },
-    hintText: { flex: 1, fontSize: 13, color: '#92400e', lineHeight: 18 },
-    errorText: { fontSize: 13, color: '#e53e3e', textAlign: 'center' },
-
-    scroll: { marginTop: 4 },
-    dayCard: {
-        width: 88, marginRight: 10,
-        backgroundColor: '#fafafa', borderRadius: 16,
-        padding: 12, alignItems: 'center',
-        borderWidth: 1, borderColor: '#efefef',
-    },
-    dayDate: { fontSize: 10, fontWeight: '600', color: '#999', textAlign: 'center', marginBottom: 8 },
-    icon: { fontSize: 26, marginBottom: 8 },
-    tempRow: { flexDirection: 'row', gap: 6, marginBottom: 8 },
-    tempMax: { fontSize: 15, fontWeight: '800', color: '#1a1a1a' },
-    tempMin: { fontSize: 15, fontWeight: '400', color: '#aaa' },
-    metaRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 },
-    metaText: { fontSize: 11, color: '#888' },
-});

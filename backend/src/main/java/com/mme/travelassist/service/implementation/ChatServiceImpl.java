@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -136,5 +137,22 @@ public class ChatServiceImpl implements ChatService {
                 .orElseThrow(() -> new RuntimeException("Message not found"));
         message.setRemembered(true);
         messageRepository.save(message);
+    }
+
+    @Override
+    public List<ChatMessage> savedMessagesForTrip(Trip trip) {
+        List<ChatSession> sessions = sessionRepository.findByTripId(trip.getId());
+        List<ChatMessage> savedMessages = new ArrayList<>();
+
+        for (ChatSession cs: sessions) {
+            List<ChatMessage> messages = cs.getMessages();
+
+            for (ChatMessage cm: messages) {
+                if (cm.isRemembered())
+                    savedMessages.add(cm);
+            }
+        }
+
+        return savedMessages;
     }
 }

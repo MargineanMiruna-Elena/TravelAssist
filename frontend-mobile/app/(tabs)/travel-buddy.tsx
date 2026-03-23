@@ -1,10 +1,11 @@
 import React, {useState, useRef, useEffect} from 'react';
 import {
     View, Text, ScrollView, TextInput, TouchableOpacity,
-    SafeAreaView, Image, KeyboardAvoidingView, Platform, Modal, Dimensions, Animated
+    KeyboardAvoidingView, Platform, Dimensions
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {LinearGradient} from 'expo-linear-gradient';
-import {Send, Plus, MapPin, X, CheckCircle2, BookmarkPlus, ChevronRight} from 'lucide-react-native';
+import {Send, Plus, X, CheckCircle2, BookmarkPlus} from 'lucide-react-native';
 import {Ionicons, MaterialCommunityIcons} from "@expo/vector-icons";
 import Logo from "@/components/logo";
 import {ChatService} from '@/services/chat-service';
@@ -34,7 +35,6 @@ export default function TravelBuddy() {
     const [chatHistory, setChatHistory] = useState<ChatSession[]>([]);
     const [isLoadingHistory, setIsLoadingHistory] = useState(false);
     const [rememberedMessages, setRememberedMessages] = useState<Set<string>>(new Set());
-
 
     const scrollViewRef = useRef<ScrollView>(null);
 
@@ -147,7 +147,7 @@ export default function TravelBuddy() {
     const handleRemember = async (messageId: string) => {
         try {
             await ChatService.rememberMessage(messageId);
-            setRememberedMessages(prev => new Set(prev).add(messageId));  // ✅ adaugă la set
+            setRememberedMessages(prev => new Set(prev).add(messageId));
         } catch (error) {
             console.error(error);
         }
@@ -155,7 +155,6 @@ export default function TravelBuddy() {
 
     return (
         <SafeAreaView className="flex-1 bg-white">
-            {/* --- HEADER --- */}
             <View className="px-5 py-2 flex-row items-center justify-between border-b border-gray-100">
                 <Logo name="Buddy" className="text-xl"/>
                 <TouchableOpacity
@@ -314,7 +313,7 @@ export default function TravelBuddy() {
                 trips={trips}
                 isLoading={isLoadingTrips}
                 selectedContextId={selectedContext?.id}
-                onSelectContext={(trip) => {
+                onSelectContext={(trip: Trip) => {
                     setSelectedContext(trip);
                     setIsContextModalVisible(false);
                 }}

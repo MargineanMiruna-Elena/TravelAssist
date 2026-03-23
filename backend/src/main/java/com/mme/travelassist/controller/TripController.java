@@ -1,14 +1,18 @@
 package com.mme.travelassist.controller;
 
+import com.mme.travelassist.dto.chat.NotesResponseDTO;
 import com.mme.travelassist.dto.trips.*;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.mapper.PoiMapper;
 import com.mme.travelassist.mapper.TripMapper;
+import com.mme.travelassist.model.ChatMessage;
 import com.mme.travelassist.model.Destination;
 import com.mme.travelassist.model.PoiCache;
 import com.mme.travelassist.model.Trip;
 import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.repository.ChatMessageRepository;
+import com.mme.travelassist.service.ChatService;
 import com.mme.travelassist.service.TripService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +30,7 @@ class TripController {
     private final TripService tripService;
     private final TripMapper tripMapper;
     private final PoiMapper poiMapper;
+    private final ChatService chatService;
 
     @PostMapping("/create")
     public ResponseEntity<CreateTripResponse> createTrip(@RequestBody CreateTripRequest createTripRequest) throws UserNotFoundException, DestinationNotFoundException {
@@ -38,7 +43,33 @@ class TripController {
     public ResponseEntity<List<TripResponseDTO>> getTripsForUser(@PathVariable UUID id) throws UserNotFoundException {
         List<Trip> trips = tripService.getTrips(id);
         List<TripResponseDTO> tripsResponse = new ArrayList<>();
+
         for (Trip t: trips) {
+            List<PoiForUserResponseDTO> poiResponse = new ArrayList<>();
+            for(PoiCache p: t.getPointsOfInterest()) {
+                poiResponse.add(
+                        new PoiForUserResponseDTO(
+                                p.getId(),
+                                p.getName(),
+                                p.getRawDataJson(),
+                                p.getLatitude(),
+                                p.getLongitude()
+                        )
+                );
+            }
+
+            List<ChatMessage> savedMessages = chatService.savedMessagesForTrip(t);
+            List<NotesResponseDTO> notes = new ArrayList<>();
+            for(ChatMessage cm: savedMessages) {
+                notes.add(
+                        new NotesResponseDTO (
+                                cm.getId(),
+                                cm.getText()
+                        )
+                );
+            }
+
+
             TripResponseDTO trd = new TripResponseDTO(
                     t.getId(),
                     t.getUser().getId(),
@@ -53,7 +84,9 @@ class TripController {
                     t.getDurationDays(),
                     t.getInterests(),
                     t.getFreeTextPreferences(),
-                    t.getStatus()
+                    t.getStatus(),
+                    poiResponse,
+                    notes
             );
             tripsResponse.add(trd);
         }

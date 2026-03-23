@@ -9,6 +9,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -61,7 +62,15 @@ public class Trip {
     @Column(nullable = false)
     private TripStatus status;
 
-    public Trip(User user, Destination destination, Boolean isFlexibleDate, Set<Integer> monthSet, LocalDate start, LocalDate end, Integer duration, Set<Category> categorySet, String additionalNotes, TripStatus status) {
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "trip_pois",
+            joinColumns = @JoinColumn(name = "trip_id"),
+            inverseJoinColumns = @JoinColumn(name = "poi_id")
+    )
+    private List<PoiCache> pointsOfInterest;
+
+    public Trip(User user, Destination destination, Boolean isFlexibleDate, Set<Integer> monthSet, LocalDate start, LocalDate end, Integer duration, Set<Category> categorySet, String additionalNotes, TripStatus status, List<PoiCache> pois) {
         this.user = user;
         this.destination = destination;
         this.isFlexibleDate = isFlexibleDate;
@@ -72,5 +81,6 @@ public class Trip {
         this.interests = categorySet;
         this.freeTextPreferences = additionalNotes;
         this.status = status;
+        this.pointsOfInterest = pois;
     }
 }

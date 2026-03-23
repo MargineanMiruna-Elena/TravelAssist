@@ -41,7 +41,7 @@ export default function Dashboard() {
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'left', 'right']}>
             <ScrollView showsVerticalScrollIndicator={false} className="px-5">
                 <View className="my-2">
                     <Logo name="Board" className="text-lg" />

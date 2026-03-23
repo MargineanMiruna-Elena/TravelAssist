@@ -3,6 +3,7 @@ package com.mme.travelassist.service;
 import com.mme.travelassist.dto.chat.ChatResponse;
 import com.mme.travelassist.model.ChatMessage;
 import com.mme.travelassist.model.ChatSession;
+import com.mme.travelassist.model.Trip;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,4 +17,6 @@ public interface ChatService {
     List<ChatMessage> getMessagesBySession(UUID sessionId);
 
     void rememberMessage(UUID messageId);
+
+    List<ChatMessage> savedMessagesForTrip(Trip t);
 }

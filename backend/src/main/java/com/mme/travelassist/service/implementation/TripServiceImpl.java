@@ -98,7 +98,8 @@ public class TripServiceImpl implements TripService {
                     createTripRequest.getDuration(),
                     categorySet,
                     createTripRequest.getAdditionalNotes(),
-                    status
+                    status,
+                    attractions
             );
         } else {
             createTrip = new Trip(
@@ -111,7 +112,8 @@ public class TripServiceImpl implements TripService {
                     createTripRequest.getDuration(),
                     categorySet,
                     createTripRequest.getAdditionalNotes(),
-                    status
+                    status,
+                    attractions
             );
         }
 

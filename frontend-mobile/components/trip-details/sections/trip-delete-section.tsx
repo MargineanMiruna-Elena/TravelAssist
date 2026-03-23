@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, ActivityIndicator } from 'react-native';
 import { Trash2 } from 'lucide-react-native';
+import {DeleteSectionProps} from "@/types/props/trip-details-modal-props";
 
-interface Props {
-    tripName: string;
-    onDelete: () => Promise<void>;
-}
-
-export default function TripDeleteSection({ tripName, onDelete }: Props) {
+export default function TripDeleteSection({ tripName, onDelete }: DeleteSectionProps) {
     const [loading, setLoading] = useState(false);
 
     const handlePress = () => {
@@ -33,27 +29,22 @@ export default function TripDeleteSection({ tripName, onDelete }: Props) {
     };
 
     return (
-        <View style={styles.container}>
-            <TouchableOpacity style={styles.button} onPress={handlePress} disabled={loading} activeOpacity={0.8}>
+        <View className="px-5 py-8">
+            <TouchableOpacity
+                className="py-3 rounded-2xl border border-red-400 bg-red-50"
+                onPress={handlePress}
+                disabled={loading}
+                activeOpacity={0.8}
+            >
                 {loading ? (
-                    <ActivityIndicator color="#e53e3e" size="small" />
+                    <ActivityIndicator color="red" size="small" />
                 ) : (
-                    <>
-                        <Trash2 size={18} color="#e53e3e" />
-                        <Text style={styles.buttonText}>Delete Trip</Text>
-                    </>
+                    <View className="flex-row items-center justify-center gap-1">
+                        <Trash2 size={18} color="red" />
+                        <Text className="text-base font-bold text-red-500">Delete Trip</Text>
+                    </View>
                 )}
             </TouchableOpacity>
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    container: { paddingHorizontal: 20, paddingVertical: 24 },
-    button: {
-        flexDirection: 'row', alignItems: 'center', justifyContent: 'center',
-        gap: 8, paddingVertical: 14, borderRadius: 16,
-        borderWidth: 1.5, borderColor: '#fecaca', backgroundColor: '#fff5f5',
-    },
-    buttonText: { fontSize: 15, fontWeight: '700', color: '#e53e3e' },
-});
