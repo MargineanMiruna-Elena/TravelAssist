@@ -92,16 +92,16 @@ export default function TravelBuddy() {
                 selectedContext?.id
             );
 
-            if (chatResponse?.sessionId) {
-                setSessionId(chatResponse.sessionId);
-            }
+                if (chatResponse?.sessionId) {
+                    setSessionId(chatResponse.sessionId);
+                }
 
-            const aiResponse: Message = {
-                id: (Date.now() + 1).toString(),
-                text: chatResponse?.aiText ?? '',
-                sender: 'ai',
-                timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
-            };
+                const aiResponse: Message = {
+                    id: chatResponse?.messageId ?? Date.now().toString(),
+                    text: chatResponse?.aiText ?? 'TravelBuddy encountered an error while processing your message. Please try again later!',
+                    sender: 'ai',
+                    timestamp: new Date().toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'})
+                };
 
             setMessages(prev => [...prev, aiResponse]);
         } catch (error) {
@@ -122,12 +122,12 @@ export default function TravelBuddy() {
         setIsHistoryVisible(false);
         setIsTyping(true);
         try {
-            const msgs = await ChatService.getMessages(session.sessionId);
-            setMessages(msgs);
+            const messages = await ChatService.getMessages(session.sessionId);
+            setMessages(messages);
             setSessionId(session.sessionId);
 
             const alreadyRemembered = new Set(
-                msgs.filter(m => m.remembered).map(m => m.id)
+                messages.filter(m => m.remembered).map(m => m.id)
             );
             setRememberedMessages(alreadyRemembered);
 
@@ -148,13 +148,16 @@ export default function TravelBuddy() {
         try {
             await ChatService.rememberMessage(messageId);
             setRememberedMessages(prev => new Set(prev).add(messageId));
+            setMessages(prev => prev.map(msg =>
+                msg.id === messageId ? {...msg, remembered: true} : msg
+            ));
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'left', 'right']}>
             <View className="px-5 py-2 flex-row items-center justify-between border-b border-gray-100">
                 <Logo name="Buddy" className="text-xl"/>
                 <TouchableOpacity
@@ -173,18 +176,19 @@ export default function TravelBuddy() {
                 <View className="bg-violet-50 px-5 py-2 flex-row justify-between items-center">
                     <View className="flex-row items-center gap-2">
                         <CheckCircle2 size={14} color="#7f22fe"/>
-                        <Text
-                            className="text-violet-700 font-bold text-xs">Context: {selectedContext.destination}</Text>
+                        <Text className="text-violet-700 font-bold text-xs">Context: {selectedContext.destination}</Text>
                     </View>
-                    <TouchableOpacity onPress={() => setSelectedContext(null)}><X size={16}
-                                                                                  color="#7f22fe"/></TouchableOpacity>
+                    <TouchableOpacity onPress={() => setSelectedContext(null)}>
+                        <X size={16} color="#7f22fe"/>
+                    </TouchableOpacity>
                 </View>
             )}
 
-            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} className="flex-1">
+            <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined} className="flex-1">
                 <ScrollView
                     ref={scrollViewRef}
                     className="flex-1 px-5 pt-4"
+                    contentContainerStyle={{ paddingBottom: 16 }}
                     onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({animated: true})}
                     showsVerticalScrollIndicator={false}
                 >
@@ -279,15 +283,18 @@ export default function TravelBuddy() {
                         <View
                             className="flex-1 flex-row items-center bg-gray-50 rounded-3xl px-4 py-1 border border-gray-200">
                             <TextInput
-                                className="flex-1 min-h-[40px] text-gray-800 py-2"
-                                placeholder="Mesajul tău..."
+                                className="flex-1 min-h-[40px] text-gray-800 pt-3"
+                                placeholder="Type a message..."
                                 value={inputText}
                                 onChangeText={setInputText}
                                 multiline
+                                placeholderTextColor="gray"
                             />
                             <TouchableOpacity onPress={sendMessage} disabled={!inputText.trim()}>
-                                <LinearGradient colors={['#4f39f6', '#7f22fe']}
-                                                className="w-9 h-9 rounded-full items-center justify-center">
+                                <LinearGradient
+                                    colors={['#4f39f6', '#7f22fe', '#51a2ff']}
+                                    className="w-9 h-9 rounded-full items-center justify-center"
+                                >
                                     <Send size={16} color="white"/>
                                 </LinearGradient>
                             </TouchableOpacity>

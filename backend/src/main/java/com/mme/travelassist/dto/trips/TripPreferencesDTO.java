@@ -8,7 +8,7 @@ import java.util.List;
 public class TripPreferencesDTO {
     private List<String> interests;
     private List<Integer> selectedMonths;
-    private String duration;
+    private int duration;
     private String additionalNotes;
     private String country;
 }

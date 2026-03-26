@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TouchableOpacity, Modal, Image, ActivityIndicat
 import { X } from 'lucide-react-native';
 import { INTERESTS } from "@/constants/interests";
 import { formatDateRange } from "@/utils/formatDateRange";
-import { ContextModalProps } from "@/types/context-modal-props";
+import { ContextModalProps } from "@/types/props/context-modal-props";
 
 export const ContextModal = ({ isVisible, onClose, trips, isLoading, selectedContextId, onSelectContext, t }: ContextModalProps) => {
     return (

@@ -1,6 +1,6 @@
 package com.mme.travelassist.model;
 
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.model.enums.TripStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
@@ -49,9 +49,9 @@ public class Trip {
     private Integer durationDays;
 
     @NotEmpty(message = "Please select at least one interest")
-    @ElementCollection(targetClass = Category.class)
+    @ElementCollection(targetClass = Interest.class)
     @Enumerated(EnumType.STRING)
-    private Set<Category> interests;
+    private Set<Interest> interests;
 
     @Size(max = 500, message = "Additional preferences text is too long")
     @Column(columnDefinition = "TEXT")
@@ -68,9 +68,9 @@ public class Trip {
             joinColumns = @JoinColumn(name = "trip_id"),
             inverseJoinColumns = @JoinColumn(name = "poi_id")
     )
-    private List<PoiCache> pointsOfInterest;
+    private List<PointOfInterest> pointsOfInterest;
 
-    public Trip(User user, Destination destination, Boolean isFlexibleDate, Set<Integer> monthSet, LocalDate start, LocalDate end, Integer duration, Set<Category> categorySet, String additionalNotes, TripStatus status, List<PoiCache> pois) {
+    public Trip(User user, Destination destination, Boolean isFlexibleDate, Set<Integer> monthSet, LocalDate start, LocalDate end, Integer duration, Set<Interest> categorySet, String additionalNotes, TripStatus status, List<PointOfInterest> pois) {
         this.user = user;
         this.destination = destination;
         this.isFlexibleDate = isFlexibleDate;

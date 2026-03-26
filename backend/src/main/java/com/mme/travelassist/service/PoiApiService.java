@@ -1,8 +1,8 @@
 package com.mme.travelassist.service;
 
 import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.PoiCache;
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.PointOfInterest;
+import com.mme.travelassist.model.enums.Interest;
 
 import java.util.List;
 
@@ -13,5 +13,5 @@ public interface PoiApiService {
      * @param destination attractions from maximum 10 km radius around the destination coordinates are fetched
      * @return a list of points of interest that are also saved to the database
      */
-    List<PoiCache> fetchAttractionsByDestination(Destination destination, List<Category> interests);
+    List<PointOfInterest> fetchAttractionsByDestination(Destination destination, List<Interest> interests);
 }

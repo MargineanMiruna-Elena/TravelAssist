@@ -24,10 +24,14 @@ export interface DestinationResponse {
 }
 
 export interface AttractionResponse {
-    xid: string;
+    id: string;
     name: string;
+    address: string;
     latitude: bigint;
     longitude: bigint;
+    category: string;
+    imageUrl: string;
+    website: string;
 }
 
 const API_URL = "http://192.168.101.18:8080/api/trips";
@@ -111,11 +115,10 @@ class TripService {
         }
     }
 
-    async findOrCreateDestination(cityName: string): Promise<DestinationResponse> {
+    async findOrCreateDestination(cityName: string, country: string): Promise<DestinationResponse> {
         const headers = await UserService.getAuthHeader();
         const res = await axios.get<DestinationResponse>(
-            `${API_URL}/destinations/search/${encodeURIComponent(cityName)}`,
-            { headers }
+            `${API_URL}/destinations/search/${encodeURIComponent(cityName)}`, { headers, params: { country: country }}
         );
         return res.data;
     }

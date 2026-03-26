@@ -98,9 +98,9 @@
     "where": {
       "title": "Wohin möchten Sie reisen?",
       "subtitle": "Wählen Sie ein Ziel oder seien Sie flexibel",
-      "city": "Stadt",
+        "city": "STADT",
       "cityPlaceholder": "Geben Sie eine Stadt ein...",
-      "country": "Land",
+      "country": "LAND",
       "countryPlaceholder": "Geben Sie ein Land ein...",
       "checkbox": "Ich bin flexibel"
     },
@@ -109,8 +109,8 @@
       "subtitle": "Wählen Sie einen Zeitraum oder die bevorzugten Monate",
       "period": "Bestimmter Zeitraum",
       "months": "Monate",
-      "departure-date": "Hinflugdatum",
-      "return-date": "Rückflugdatum",
+      "departure-date": "STARTDATUM",
+      "return-date": "ENDDATUM",
       "select-date": "Wählen Sie ein Datum",
       "preferred-months": "Wählen Sie die bevorzugten Monate"
     },
@@ -128,8 +128,8 @@
       "title": "Haben Sie weitere Wünsche?",
       "subtitle": "Erzählen Sie mir mehr über Ihre Reisepläne",
       "example": "z.B.: Ich bevorzuge 4-Sterne-Hotels, möchte Touristenmassen meiden, interessiere mich für lokale Festivals...",
-      "summary": "Reisezusammenfassung:",
-      "destination": "Zielort: ",
+      "summary": "REISEZUSAMMENFASSUNG",
+      "destination": "SIE REISEN NACH:",
       "flexible": "Flexibel",
       "period": "Zeitraum: ",
       "unconfigured": "Nicht konfiguriert",
@@ -163,6 +163,6 @@
   },
   "bot": {
     "welcome-message": "Hallo! Ich bin TravelBuddy, dein persönlicher Reisebegleiter. Wo soll es als Nächstes hingehen? Ich kann dir helfen, Reiseziele zu finden, Geheimtipps zu entdecken oder deine perfekte Route zu planen. Sag mir einfach, wonach du suchst!",
-    "context": "Chat-Kontext auswählen",
+    "context": "Chat-Kontext auswählen"
   }
 }

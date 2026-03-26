@@ -5,12 +5,13 @@ import com.mme.travelassist.model.ChatMessage;
 import com.mme.travelassist.model.ChatSession;
 import com.mme.travelassist.model.Trip;
 import com.mme.travelassist.model.User;
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.repository.ChatMessageRepository;
 import com.mme.travelassist.repository.ChatSessionRepository;
 import com.mme.travelassist.repository.TripRepository;
 import com.mme.travelassist.repository.UserRepository;
 import com.mme.travelassist.service.ChatService;
+import jakarta.mail.Message;
 import org.springframework.ai.chat.client.ChatClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -57,9 +58,9 @@ public class ChatServiceImpl implements ChatService {
 
         String tripInfo = "";
         if (session.getTrip() != null) {
-            tripInfo = "User is planning a trip to " + session.getTrip().getDestination().getLocalName() + ", " + session.getTrip().getDestination().getCountry() +
+            tripInfo = "User is planning a trip to " + session.getTrip().getDestination().getName() + ", " + session.getTrip().getDestination().getCountry() +
                     " and has following interest categories: ";
-            for(Category c: session.getTrip().getInterests()) {
+            for(Interest c: session.getTrip().getInterests()) {
                 tripInfo = tripInfo + c + " ";
             }
         }
@@ -79,7 +80,8 @@ public class ChatServiceImpl implements ChatService {
                 .call()
                 .content();
 
-        saveMessage(session, aiResponse, "AI");
+        ChatMessage savedMessage = saveMessage(session, aiResponse, "AI");
+        chatResponse.setMessageId(savedMessage.getId());
         chatResponse.setAiText(aiResponse);
         chatResponse.setTimestamp(LocalDateTime.now());
 
@@ -100,7 +102,7 @@ public class ChatServiceImpl implements ChatService {
         if (tripId != null) {
             Trip trip = tripRepository.findById(tripId).orElse(null);
             session.setTrip(trip);
-            session.setTitle(trip != null ? "Trip to " + trip.getDestination().getLocalName() : "Travel Plan");
+            session.setTitle(trip != null ? "Trip to " + trip.getDestination().getName() : "Travel Plan");
         } else {
             String title = firstMessage.length() > 30 ? firstMessage.substring(0, 27) + "..." : firstMessage;
             session.setTitle(title);
@@ -112,13 +114,13 @@ public class ChatServiceImpl implements ChatService {
     /**
      * Helper for message saving.
      */
-    private void saveMessage(ChatSession session, String text, String sender) {
+    private ChatMessage saveMessage(ChatSession session, String text, String sender) {
         ChatMessage chatMessage = new ChatMessage();
         chatMessage.setSession(session);
         chatMessage.setText(text);
         chatMessage.setSender(sender);
         chatMessage.setTimestamp(LocalDateTime.now());
-        messageRepository.save(chatMessage);
+        return messageRepository.save(chatMessage);
     }
 
     @Override

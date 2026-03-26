@@ -98,9 +98,9 @@
     "where": {
       "title": "Unde vrei să călătorești?",
       "subtitle": "Alege o destinație sau fii flexibil",
-      "city": "Oraș",
+      "city": "ORAȘ",
       "cityPlaceholder": "Introdu un oraș...",
-      "country": "Țară",
+      "country": "ȚARĂ",
       "countryPlaceholder": "Introdu o țară...",
       "checkbox": "Sunt flexibil"
     },
@@ -109,8 +109,8 @@
       "subtitle": "Alege o perioadă specifică sau lunile preferate",
       "period": "Perioadă specifică",
       "months": "Luni",
-      "departure-date": "Data plecării",
-      "return-date": "Data întoarcerii",
+      "departure-date": "DATA PLECĂRII",
+      "return-date": "DATA ÎNTOARCERII",
       "select-date": "Selectează o dată",
       "preferred-months": "Selectează lunile preferate"
     },
@@ -128,8 +128,8 @@
       "title": "Alte preferințe?",
       "subtitle": "Spune-mi mai multe despre planurile tale de călătorie",
       "example": "ex: Prefer hoteluri de 4 stele, vreau să evit locurile aglomerate, sunt interesat de festivaluri locale...",
-      "summary": "Sumar călătorie:",
-      "destination": "Destinație: ",
+      "summary": "SUMAR CĂLĂTORIE",
+      "destination": "VEI CĂLĂTORI ÎN:",
       "flexible": "Flexibil",
       "period": "Perioadă: ",
       "unconfigured": "Neconfigurat",
@@ -163,6 +163,6 @@
   },
   "bot": {
     "welcome-message": "Salut! Sunt TravelBuddy, ghidul tău personal de călătorie. Încotro pornim? Te pot ajuta să găsești destinații, să descoperi locuri spectaculoase sau să îți planifici itinerariul perfect. Spune-mi doar ce cauți!",
-    "context": "Selectează contextul conversației",
+    "context": "Selectează contextul conversației"
   }
 }

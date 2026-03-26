@@ -1,8 +1,8 @@
 import React, {useRef, useState} from 'react';
 import {
-    View, Text, StyleSheet, SafeAreaView, TouchableOpacity,
-    Dimensions, Image
+    View, Text, StyleSheet, TouchableOpacity, Dimensions, Image
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { MapPin, Navigation } from 'lucide-react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
@@ -35,7 +35,7 @@ export default function MapExplorer({ navigation }: NativeStackScreenProps<RootS
     };
 
     return (
-        <SafeAreaView className="flex-1 bg-white">
+        <SafeAreaView className="flex-1 bg-white" edges={['top', 'left', 'right']}>
             <View className="absolute top-[67px] left-5 z-10">
                 <Logo name="Map" className="text-lg" />
             </View>

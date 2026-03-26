@@ -12,6 +12,7 @@ import java.util.UUID;
 @NoArgsConstructor
 public class ChatResponse {
     private UUID sessionId;
+    private UUID messageId;
     private String aiText;
     private LocalDateTime timestamp;
 }

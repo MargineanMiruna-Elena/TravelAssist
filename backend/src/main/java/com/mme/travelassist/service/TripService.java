@@ -5,9 +5,9 @@ import com.mme.travelassist.dto.trips.TripPreferencesDTO;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
 import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.PointOfInterest;
 import com.mme.travelassist.model.Trip;
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 
 import java.util.List;
 import java.util.UUID;
@@ -30,7 +30,7 @@ public interface TripService {
      * @param destination the destination chosen by the user
      * @return a list of attractions that are in the destination city
      */
-    List<PoiCache> getAttractions(Destination destination, List<Category> interests);
+    List<PointOfInterest> getAttractions(Destination destination, List<Interest> interests);
 
     /**
      * Retrieves destination by destination id
@@ -49,5 +49,5 @@ public interface TripService {
 
     List<String> searchCountriesByName(String name);
 
-    Destination findOrCreateDestination(String cityName);
+    Destination findOrCreateDestination(String cityName, String countryName);
 }

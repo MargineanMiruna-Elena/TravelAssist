@@ -4,14 +4,13 @@ import com.mme.travelassist.dto.chat.NotesResponseDTO;
 import com.mme.travelassist.dto.trips.*;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
-import com.mme.travelassist.mapper.PoiMapper;
+import com.mme.travelassist.mapper.PointOfInterestMapper;
 import com.mme.travelassist.mapper.TripMapper;
 import com.mme.travelassist.model.ChatMessage;
 import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.PointOfInterest;
 import com.mme.travelassist.model.Trip;
-import com.mme.travelassist.model.enums.Category;
-import com.mme.travelassist.repository.ChatMessageRepository;
+import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.service.ChatService;
 import com.mme.travelassist.service.TripService;
 import lombok.RequiredArgsConstructor;
@@ -29,8 +28,8 @@ class TripController {
 
     private final TripService tripService;
     private final TripMapper tripMapper;
-    private final PoiMapper poiMapper;
     private final ChatService chatService;
+    private final PointOfInterestMapper pointOfInterestMapper;
 
     @PostMapping("/create")
     public ResponseEntity<CreateTripResponse> createTrip(@RequestBody CreateTripRequest createTripRequest) throws UserNotFoundException, DestinationNotFoundException {
@@ -46,12 +45,12 @@ class TripController {
 
         for (Trip t: trips) {
             List<PoiForUserResponseDTO> poiResponse = new ArrayList<>();
-            for(PoiCache p: t.getPointsOfInterest()) {
+            for(PointOfInterest p: t.getPointsOfInterest()) {
                 poiResponse.add(
                         new PoiForUserResponseDTO(
                                 p.getId(),
                                 p.getName(),
-                                p.getRawDataJson(),
+                                p.getAddress(),
                                 p.getLatitude(),
                                 p.getLongitude()
                         )
@@ -69,11 +68,10 @@ class TripController {
                 );
             }
 
-
             TripResponseDTO trd = new TripResponseDTO(
                     t.getId(),
                     t.getUser().getId(),
-                    t.getDestination().getLocalName(),
+                    t.getDestination().getName(),
                     t.getDestination().getCountry(),
                     t.getDestination().getLatitude(),
                     t.getDestination().getLongitude(),
@@ -113,15 +111,16 @@ class TripController {
     }
 
     @PostMapping("/attractions/{destinationId}")
-    public ResponseEntity<List<PoiCacheResponseDTO>> getAttractionsByDestination(@PathVariable UUID destinationId, @RequestBody List<Category> interests) throws DestinationNotFoundException {
+    public ResponseEntity<List<PointOfInterestResponse>> getAttractionsByDestination(@PathVariable UUID destinationId, @RequestBody List<Interest> interests) throws DestinationNotFoundException {
 
         Destination destination = tripService.getDestinationById(destinationId);
 
-        List<PoiCache> pois = tripService.getAttractions(destination, interests);
-        List<PoiCacheResponseDTO> poisResponse = new ArrayList<>();
+        List<PointOfInterest> pois = tripService.getAttractions(destination, interests);
+        List<PointOfInterestResponse> poisResponse = new ArrayList<>();
 
-        for(PoiCache p : pois) {
-            poisResponse.add(poiMapper.poiCacheToPoiCacheResponseDTO(p));
+        for(PointOfInterest p : pois) {
+            PointOfInterestResponse poir = pointOfInterestMapper.pointOfInterestToPointOfInterestResponse(p);
+            poisResponse.add(poir);
         }
 
         return ResponseEntity.ok(poisResponse);
@@ -150,11 +149,14 @@ class TripController {
     }
 
     @GetMapping("/destinations/search/{cityName}")
-    public ResponseEntity<Destination> findOrCreateDestination(@PathVariable String cityName) {
+    public ResponseEntity<Destination> findOrCreateDestination(
+            @PathVariable String cityName,
+            @RequestParam String country
+    ) {
         if (cityName == null || cityName.trim().length() < 2) {
             return ResponseEntity.ok(null);
         }
-        return ResponseEntity.ok(tripService.findOrCreateDestination(cityName));
-    }
 
+        return ResponseEntity.ok(tripService.findOrCreateDestination(cityName, country));
+    }
 }

@@ -1,6 +1,6 @@
 package com.mme.travelassist.model;
 
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -27,11 +27,6 @@ public class Destination {
 
     @NotBlank(message = "City name is required")
     @Size(max = 100)
-    @Column(nullable = false, unique = true)
-    private String localName;
-
-    @NotBlank(message = "City name is required")
-    @Size(max = 100)
     @Column(nullable = false)
     private String name;
 
@@ -47,13 +42,22 @@ public class Destination {
     private Double longitude;
 
     @NotEmpty(message = "Destination must have at least one tag")
-    @ElementCollection(targetClass = Category.class)
+    @ElementCollection(targetClass = Interest.class)
     @Enumerated(EnumType.STRING)
-    private Set<Category> tags;
+    private Set<Interest> interests;
 
     @NotEmpty(message = "Best months for visiting must be specified")
     @ElementCollection
     private Set<Integer> bestMonths;
+
+    @Column
+    private Integer recommendedMinDays;
+
+    @Column
+    private Integer recommendedMaxDays;
+
+    @Column
+    private Double averageRating;
 
     @Column(length=1000)
     private String imageUrl;
