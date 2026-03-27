@@ -3,16 +3,13 @@ package com.mme.travelassist.dto.trips;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.UUID;
-
 @Data
 @AllArgsConstructor
-public class PoiForUserResponseDTO {
-    private UUID id;
+public class PoiSearchResult {
+    private String id;
     private String name;
     private String address;
-    private Double latitude;
-    private Double longitude;
-    private String category;
+    private double latitude;
+    private double longitude;
     private String website;
 }

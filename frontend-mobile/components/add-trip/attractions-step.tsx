@@ -87,7 +87,7 @@ export default function AttractionsStep({attractions, selectedAttractions, onTog
                                         hitSlop={{top: 6, bottom: 6, left: 6, right: 6}}
                                     >
                                         <Ionicons name="globe-outline" size={14} color="#7f22fe"/>
-                                        <Text className="text-xs text-violet-600 ml-1 underline" numberOfLines={1}>
+                                        <Text className="text-xs text-violet-700 ml-1 underline" numberOfLines={1}>
                                             {attr.website}
                                         </Text>
                                     </TouchableOpacity>

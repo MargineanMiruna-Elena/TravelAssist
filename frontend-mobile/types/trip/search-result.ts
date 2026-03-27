@@ -1,9 +1,8 @@
-export interface PointOfInterest {
+export interface SearchResult {
     id: string;
     name: string;
     address: string;
     latitude: number;
     longitude: number;
-    category: string;
     website: string;
 }

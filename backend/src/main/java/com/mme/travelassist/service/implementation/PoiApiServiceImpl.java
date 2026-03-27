@@ -1,10 +1,13 @@
 package com.mme.travelassist.service.implementation;
 
 import com.mme.travelassist.client.WikipediaImageClient;
+import com.mme.travelassist.dto.trips.PoiSearchResult;
 import com.mme.travelassist.model.Destination;
 import com.mme.travelassist.model.PointOfInterest;
+import com.mme.travelassist.model.Trip;
 import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.repository.PointOfInterestRepository;
+import com.mme.travelassist.repository.TripRepository;
 import com.mme.travelassist.service.PoiApiService;
 import jakarta.transaction.Transactional;
 import lombok.Data;
@@ -93,6 +96,75 @@ public class PoiApiServiceImpl implements PoiApiService {
 
         logger.info("Total retrieved: {} POIs for {}", finalResult.size(), destination.getName());
         return finalResult;
+    }
+
+    @Override
+    public List<PoiSearchResult> search(String query, double lat, double lng) {
+        String url = UriComponentsBuilder.fromHttpUrl(FSQ_URL)
+                .queryParam("query", query)
+                .queryParam("ll", lat + "," + lng)
+                .queryParam("radius", 10000)
+                .queryParam("limit", 5)
+                .queryParam("fields", "fsq_place_id,name,location,latitude,longitude,website")
+                .build().toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + foursquareApiKey.trim());
+        headers.set("X-Places-Api-Version", "2025-06-17");
+
+        ResponseEntity<FsqResponse> response = restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<>(headers), FsqResponse.class);
+
+        List<PoiSearchResult> results = Optional.ofNullable(response.getBody())
+                .map(FsqResponse::getResults)
+                .orElse(List.of())
+                .stream()
+                .map(p -> new PoiSearchResult(
+                        p.getFsq_place_id(),
+                        p.getName(),
+                        p.getLocation() != null ? p.getLocation().getFormatted_address() : "",
+                        p.getLatitude(),
+                        p.getLongitude(),
+                        p.getWebsite() != null ? p.getWebsite() : ""
+                ))
+                .toList();
+
+        return results;
+    }
+
+    @Override
+    public PointOfInterest findPoiOrCreate(Trip trip, String xId) {
+        Optional<PointOfInterest> existing = pointOfInterestRepository.findByXid(xId);
+        if (existing.isPresent()) {
+            return existing.get();
+        }
+
+        String url = "https://places-api.foursquare.com/places/" + xId +
+                "?fields=fsq_place_id,name,location,website,latitude,longitude,categories";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + foursquareApiKey.trim());
+        headers.set("X-Places-Api-Version", "2025-06-17");
+
+        FsqPlace place = restTemplate.exchange(
+                url, HttpMethod.GET, new HttpEntity<>(headers), FsqPlace.class).getBody();
+
+        Interest interest = Optional.ofNullable(extractCategory(place))
+                .map(Interest::fromKind)
+                .orElse(Interest.CITY_BREAK);
+
+        PointOfInterest poi = new PointOfInterest();
+        poi.setXid(place.getFsq_place_id());
+        poi.setName(place.getName());
+        poi.setLatitude(place.getLatitude());
+        poi.setLongitude(place.getLongitude());
+        poi.setAddress(place.getLocation().getFormatted_address());
+        poi.setDestination(trip.getDestination());
+        poi.setCategory(extractCategory(place));
+        poi.setWebsite(place.getWebsite());
+        poi.setInterests(new HashSet<>(Set.of(interest)));
+
+        return pointOfInterestRepository.save(poi);
     }
 
     private void fetchAndSave(Destination destination, Interest interest, int limit) {

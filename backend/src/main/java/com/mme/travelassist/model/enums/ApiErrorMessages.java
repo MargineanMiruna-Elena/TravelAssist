@@ -19,7 +19,8 @@ public enum ApiErrorMessages {
     CONSTRAINT_VIOLATION("api-errors.constraint-violation"),
     FORBIDDEN("api-errors.forbidden"),
     UNAUTHORIZED("api-errors.unauthorized"),
-    DESTINATION_NOT_FOUND("api-errors.destination-not-found-error");
+    DESTINATION_NOT_FOUND("api-errors.destination-not-found-error"),
+    TRIP_NOT_FOUND("api-errors.trip-not-found-error");
 
     private final String code;
 

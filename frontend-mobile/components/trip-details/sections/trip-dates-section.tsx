@@ -9,21 +9,59 @@ import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
 
 type PickerTarget = 'start' | 'end' | null;
 
+const getTomorrow = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 1);
+    d.setHours(0, 0, 0, 0);
+    return d;
+};
+
+const getInOneWeek = () => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    d.setHours(0, 0, 0, 0);
+    return d;
+};
+
 export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) {
     const hasExactDates = !!trip.startDate && !!trip.endDate;
 
     const [editing, setEditing] = useState(false);
     const [startDate, setStartDate] = useState<Date>(
-        trip.startDate ? new Date(trip.startDate) : new Date()
+        trip.startDate ? new Date(trip.startDate) : getTomorrow()
     );
     const [endDate, setEndDate] = useState<Date>(
-        trip.endDate ? new Date(trip.endDate) : new Date()
+        trip.endDate ? new Date(trip.endDate) : getInOneWeek()
     );
     const [activePicker, setActivePicker] = useState<PickerTarget>(null);
     const [saving, setSaving] = useState(false);
 
+
     const fmt = (d: Date) =>
         d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+
+    const calculateDuration = (startDate: string, endDate: string) => {
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const diffTime = Math.abs(end.getTime() - start.getTime());
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+        return diffDays || 1;
+
+    };
+
+    const calculateSelectedMonths = (startDate: string, endDate: string): number[] => {
+        if (!startDate || !endDate) return [];
+        const start = new Date(startDate);
+        const end = new Date(endDate);
+        const months = new Set<number>();
+
+        let current = new Date(start.getFullYear(), start.getMonth(), 1);
+        while (current <= end) {
+            months.add(current.getMonth() + 1);
+            current.setMonth(current.getMonth() + 1);
+        }
+        return Array.from(months);
+    };
 
     const handleSave = async () => {
         setSaving(true);
@@ -31,9 +69,11 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
             const payload = {
                 startDate: startDate.toISOString().split('T')[0],
                 endDate: endDate.toISOString().split('T')[0],
+                duration: calculateDuration(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]),
+                months: calculateSelectedMonths(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0])
             };
-            await TripService.updateTripDates(trip.id, payload);
-            onUpdate(payload);
+            const updatedDatesTrip = await TripService.updateTripDates(trip.id, payload);
+            onUpdate(updatedDatesTrip);
             setEditing(false);
         } catch (e) {
             console.error('Failed to update dates:', e);
@@ -131,6 +171,7 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
                             mode="date"
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             onChange={handleChange}
+                            minimumDate={new Date()}
                             maximumDate={endDate}
                             themeVariant="light"
                         />

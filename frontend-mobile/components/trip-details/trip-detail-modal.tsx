@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, View, ScrollView, StyleSheet, Dimensions } from 'react-native';
+import {Modal, View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
 import { Trip } from '@/types/trip/trip';
 import { PointOfInterest } from '@/types/trip/point-of-interest';
 import { TripDetailsModalProps } from '@/types/props/trip-details-modal-props';
@@ -12,29 +12,38 @@ import TripNotesSection from "@/components/trip-details/sections/trip-notes-sect
 import TripWeatherSection from "@/components/trip-details/sections/trip-weather-section";
 import TripItinerarySection from "@/components/trip-details/sections/trip-itinerary-section";
 import TripDeleteSection from "@/components/trip-details/sections/trip-delete-section";
+import {SearchResult} from "@/types/trip/search-result";
 
 const { height } = Dimensions.get('window');
 
 export default function TripDetailsModal({ trip, visible, onClose }: TripDetailsModalProps) {
     const [localTrip, setLocalTrip] = useState<Trip | null>(trip);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        setLocalTrip(trip);
-    }, [trip]);
+        if (visible && trip?.id) {
+            setLoading(true);
+            TripService.getTrip(trip.id)
+                .then(setLocalTrip)
+                .catch(() => setLocalTrip(trip))
+                .finally(() => setLoading(false));
+        }
+    }, [visible, trip?.id]);
 
-    if (!localTrip) return null;
+    if (!localTrip || loading) return null;
 
     const updateLocal = (patch: Partial<Trip>) => {
         setLocalTrip(prev => prev ? { ...prev, ...patch } : prev);
     };
 
-    const handleAddPOI = async (poi: PointOfInterest) => {
-        const updated = [...(localTrip.pointsOfInterest ?? []), poi];
-        updateLocal({ pointsOfInterest: updated });
+    const handleAddPOI = async (result: SearchResult) => {
+        const previousPois = localTrip.pointsOfInterest ?? [];
+
         try {
-            await TripService.updateTrip(localTrip.id, { pointsOfInterest: updated });
-        } catch {
-            updateLocal({ pointsOfInterest: localTrip.pointsOfInterest ?? [] });
+            const updatedFromBackend = await TripService.addPoiToTrip(localTrip.id, result.id);
+            updateLocal({ pointsOfInterest: updatedFromBackend });
+        } catch (error: any) {
+            updateLocal({ pointsOfInterest: previousPois });
         }
     };
 
@@ -42,7 +51,7 @@ export default function TripDetailsModal({ trip, visible, onClose }: TripDetails
         const updated = (localTrip.pointsOfInterest ?? []).filter(p => p.id !== id);
         updateLocal({ pointsOfInterest: updated });
         try {
-            await TripService.updateTrip(localTrip.id, { pointsOfInterest: updated });
+            await TripService.deletePoiFromTrip(localTrip.id, id);
         } catch {
             updateLocal({ pointsOfInterest: localTrip.pointsOfInterest ?? [] });
         }

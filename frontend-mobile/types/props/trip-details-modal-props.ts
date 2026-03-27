@@ -1,6 +1,7 @@
 import {Trip} from "@/types/trip/trip";
 import {PointOfInterest} from "@/types/trip/point-of-interest";
 import {Note} from "@/types/trip/notes";
+import {SearchResult} from "@/types/trip/search-result";
 
 export interface TripDetailsModalProps {
     trip: Trip | null;
@@ -20,7 +21,7 @@ export interface DatesSectionProps {
 
 export interface POISectionProps {
     pois: PointOfInterest[];
-    onAdd: (poi: PointOfInterest) => void;
+    onAdd: (result: SearchResult) => void;
     onRemove: (id: string) => void;
 }
 
