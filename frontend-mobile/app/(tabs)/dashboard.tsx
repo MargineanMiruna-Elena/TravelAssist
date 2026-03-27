@@ -84,7 +84,10 @@ export default function Dashboard() {
             <TripDetailsModal
                 trip={selectedTrip}
                 visible={modalVisible}
-                onClose={() => setModalVisible(false)}
+                onClose={() => {
+                    setModalVisible(false);
+                    fetchTrips();
+                }}
             />
         </SafeAreaView>
     );
