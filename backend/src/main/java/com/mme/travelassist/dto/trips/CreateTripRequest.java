@@ -15,5 +15,5 @@ public class CreateTripRequest {
     private List<String> interests;
     private String additionalNotes;
     private UUID selectedDestination;
-    private List<String> selectedAttractions;
+    private List<UUID> selectedAttractions;
 }

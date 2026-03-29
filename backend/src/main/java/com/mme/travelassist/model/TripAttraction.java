@@ -32,7 +32,7 @@ public class TripAttraction {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(referencedColumnName = "id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
-    private Attraction attraction;
+    private PointOfInterest pointOfInterest;
 
     @Column(nullable = false)
     @NotBlank(message = "VisitPreference must not be blank")

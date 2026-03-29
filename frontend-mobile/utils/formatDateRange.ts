@@ -1,11 +1,14 @@
+import { parseLocalDate } from "@/utils/dateUtils";
+
 export const formatDateRange = (
     startStr?: string | null,
     endStr?: string | null,
     preferredMonths?: number[]
 ) => {
     if (startStr && endStr) {
-        const start = new Date(startStr);
-        const end = new Date(endStr);
+        const start = parseLocalDate(startStr);
+        const end = parseLocalDate(endStr);
+
         const year = start.getFullYear();
         const startDay = start.getDate();
         const endDay = end.getDate();
@@ -14,6 +17,7 @@ export const formatDateRange = (
         if (start.getMonth() === end.getMonth()) {
             return `${startDay} - ${endDay} ${startMonth} ${year}`;
         }
+
         const endMonth = end.toLocaleString('default', { month: 'short' });
         return `${startDay} ${startMonth} - ${endDay} ${endMonth} ${year}`;
     }
@@ -22,8 +26,7 @@ export const formatDateRange = (
         const sorted = [...new Set(preferredMonths)].sort((a, b) => a - b);
 
         const getMonthName = (m: number) => {
-            const date = new Date();
-            date.setMonth(m - 1);
+            const date = new Date(2024, m - 1, 1);
             return date.toLocaleString('default', { month: 'short' });
         };
 

@@ -98,9 +98,9 @@
     "where": {
       "title": "Where do you want to travel?",
       "subtitle": "Choose a destination or be flexible",
-      "city": "City",
+      "city": "CITY",
       "cityPlaceholder": "Type a city...",
-      "country": "Country",
+      "country": "COUNTRY",
       "countryPlaceholder": "Type a country...",
       "checkbox": "I'm flexible"
     },
@@ -109,8 +109,8 @@
       "subtitle": "Choose a specific period or the preferred months",
       "period": "Specific period",
       "months": "Months",
-      "departure-date": "Departure date",
-      "return-date": "Return date",
+      "departure-date": "START DATE",
+      "return-date": "END DATE",
       "select-date": "Select a date",
       "preferred-months": "Select the preferred months"
     },
@@ -126,10 +126,10 @@
     },
     "preferences": {
       "title": "Any other preferences?",
-      "subtitle": "Tell me more about your travel plans",
-      "example": "ex: I prefer 4-star hotels, I’d like to stay away from tourist traps, I’m interested in local festivals...",
-      "summary": "Trip summary:",
-      "destination": "Destination: ",
+      "subtitle": "Help us tailor your journey. Sharing a few details about your travel style allows us to craft an itinerary that is uniquely yours.",
+      "example": "e.g., 'I’m an early riser, I’d like a lunch break at 1 PM, and I prefer a relaxed pace with not too much walking...'",
+      "summary": "TRIP SUMMARY",
+      "destination": "GOING TO:",
       "flexible": "Flexible",
       "period": "Period: ",
       "unconfigured": "Unconfigured",
@@ -164,6 +164,6 @@
   "bot": {
     "welcome-message": "Hi there! I’m TravelBuddy, your personal guide to the world. Where are we heading next? I can help you find destinations, discover local gems, or plan your perfect itinerary. Just tell me what you’re looking for!",
     "context": "Select Chat Context",
-    "subtitle": "TravelBuddy will know the details of your trip and adapt the answers.",
+    "subtitle": "TravelBuddy will know the details of your trip and adapt the answers."
   }
 }

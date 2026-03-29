@@ -1,14 +1,10 @@
 package com.mme.travelassist.service;
 
-import com.mme.travelassist.dto.trips.GeoDbCityDTO;
 import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.enums.Category;
-
-import java.util.Set;
 
 public interface DestinationSyncService {
 
-    Destination findOrCreateDestination(String cityName);
+    Destination findOrCreateDestination(String cityName, String countryName);
 
     /**
      * Image sync for destinations

@@ -1,11 +1,13 @@
 package com.mme.travelassist.dto.trips;
 
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.dto.chat.NotesResponseDTO;
+import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.model.enums.TripStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,7 +25,9 @@ public class TripResponseDTO {
     private LocalDate startDate;
     private LocalDate endDate;
     private int durationDays;
-    private Set<Category> interests;
+    private Set<Interest> interests;
     private String freeTextPreferences;
     private TripStatus status;
+    private List<PoiForUserResponseDTO> pointsOfInterest;
+    private List<NotesResponseDTO> notes;
 }

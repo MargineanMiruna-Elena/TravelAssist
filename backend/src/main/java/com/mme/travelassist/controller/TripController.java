@@ -1,15 +1,20 @@
 package com.mme.travelassist.controller;
 
+import com.mme.travelassist.dto.chat.NotesResponseDTO;
 import com.mme.travelassist.dto.trips.*;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
+import com.mme.travelassist.exception.trip.TripNotFoundException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
-import com.mme.travelassist.mapper.PoiMapper;
+import com.mme.travelassist.mapper.PointOfInterestMapper;
 import com.mme.travelassist.mapper.TripMapper;
+import com.mme.travelassist.model.ChatMessage;
 import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.PoiCache;
+import com.mme.travelassist.model.PointOfInterest;
 import com.mme.travelassist.model.Trip;
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
+import com.mme.travelassist.service.ChatService;
 import com.mme.travelassist.service.TripService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +30,8 @@ class TripController {
 
     private final TripService tripService;
     private final TripMapper tripMapper;
-    private final PoiMapper poiMapper;
+    private final ChatService chatService;
+    private final PointOfInterestMapper pointOfInterestMapper;
 
     @PostMapping("/create")
     public ResponseEntity<CreateTripResponse> createTrip(@RequestBody CreateTripRequest createTripRequest) throws UserNotFoundException, DestinationNotFoundException {
@@ -34,30 +40,38 @@ class TripController {
         return ResponseEntity.ok(tripResponse);
     }
 
+    @GetMapping("/trip/{id}")
+    public ResponseEntity<TripResponseDTO> getTrip(@PathVariable UUID id) throws TripNotFoundException {
+        Trip trip = tripService.getTrip(id);
+        TripResponseDTO tripResponseDTO = convert(trip);
+
+        return ResponseEntity.ok(tripResponseDTO);
+    }
+
     @GetMapping("/all-trips/{id}")
     public ResponseEntity<List<TripResponseDTO>> getTripsForUser(@PathVariable UUID id) throws UserNotFoundException {
         List<Trip> trips = tripService.getTrips(id);
         List<TripResponseDTO> tripsResponse = new ArrayList<>();
+
         for (Trip t: trips) {
-            TripResponseDTO trd = new TripResponseDTO(
-                    t.getId(),
-                    t.getUser().getId(),
-                    t.getDestination().getLocalName(),
-                    t.getDestination().getCountry(),
-                    t.getDestination().getLatitude(),
-                    t.getDestination().getLongitude(),
-                    t.getDestination().getImageUrl(),
-                    t.getPreferredMonths(),
-                    t.getExactStartDate(),
-                    t.getExactEndDate(),
-                    t.getDurationDays(),
-                    t.getInterests(),
-                    t.getFreeTextPreferences(),
-                    t.getStatus()
-            );
-            tripsResponse.add(trd);
+            TripResponseDTO tripResponseDTO = convert(t);
+            tripsResponse.add(tripResponseDTO);
         }
         return ResponseEntity.ok(tripsResponse);
+    }
+
+    @PostMapping("/update-dates/{id}")
+    public ResponseEntity<TripResponseDTO> updateTripDates(@PathVariable UUID id, @Valid @RequestBody UpdateDatesRequest updateDatesRequest) throws TripNotFoundException {
+        Trip trip = tripService.updateTripDates(id, updateDatesRequest);
+        TripResponseDTO tripResponseDTO = convert(trip);
+
+        return ResponseEntity.ok(tripResponseDTO);
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteTrip(@PathVariable UUID id) {
+        tripService.deleteTrip(id);
+        return ResponseEntity.ok().build();
     }
 
     /**
@@ -80,15 +94,16 @@ class TripController {
     }
 
     @PostMapping("/attractions/{destinationId}")
-    public ResponseEntity<List<PoiCacheResponseDTO>> getAttractionsByDestination(@PathVariable UUID destinationId, @RequestBody List<Category> interests) throws DestinationNotFoundException {
+    public ResponseEntity<List<PointOfInterestResponse>> getAttractionsByDestination(@PathVariable UUID destinationId, @RequestBody List<Interest> interests) throws DestinationNotFoundException {
 
         Destination destination = tripService.getDestinationById(destinationId);
 
-        List<PoiCache> pois = tripService.getAttractions(destination, interests);
-        List<PoiCacheResponseDTO> poisResponse = new ArrayList<>();
+        List<PointOfInterest> pois = tripService.getAttractions(destination, interests);
+        List<PointOfInterestResponse> poisResponse = new ArrayList<>();
 
-        for(PoiCache p : pois) {
-            poisResponse.add(poiMapper.poiCacheToPoiCacheResponseDTO(p));
+        for(PointOfInterest p : pois) {
+            PointOfInterestResponse poir = pointOfInterestMapper.pointOfInterestToPointOfInterestResponse(p);
+            poisResponse.add(poir);
         }
 
         return ResponseEntity.ok(poisResponse);
@@ -117,11 +132,111 @@ class TripController {
     }
 
     @GetMapping("/destinations/search/{cityName}")
-    public ResponseEntity<Destination> findOrCreateDestination(@PathVariable String cityName) {
+    public ResponseEntity<Destination> findOrCreateDestination(
+            @PathVariable String cityName,
+            @RequestParam String country
+    ) {
         if (cityName == null || cityName.trim().length() < 2) {
             return ResponseEntity.ok(null);
         }
-        return ResponseEntity.ok(tripService.findOrCreateDestination(cityName));
+
+        return ResponseEntity.ok(tripService.findOrCreateDestination(cityName, country));
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<List<PoiSearchResult>> search(@RequestParam String query, @RequestParam double lat, @RequestParam double lng) {
+        List<PoiSearchResult> results = tripService.searchPoiByName(query, lat, lng);
+        return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/{tripId}/add-poi/{xId}")
+    public ResponseEntity<List<PoiForUserResponseDTO>> addPoiToTrip(@PathVariable UUID tripId, @PathVariable String xId) throws TripNotFoundException {
+        List<PointOfInterest> updatedPoiList = tripService.addPoiToTrip(tripId, xId);
+        List<PoiForUserResponseDTO> poiResponse = new ArrayList<>();
+        for(PointOfInterest p: updatedPoiList) {
+            poiResponse.add(
+                    new PoiForUserResponseDTO(
+                            p.getId(),
+                            p.getName(),
+                            p.getAddress(),
+                            p.getLatitude(),
+                            p.getLongitude(),
+                            p.getCategory(),
+                            p.getWebsite()
+                    )
+            );
+        }
+
+        return ResponseEntity.ok(poiResponse);
+    }
+
+    @DeleteMapping("/{tripId}/delete-poi/{id}")
+    public ResponseEntity<List<PoiForUserResponseDTO>> deletePoiFromTrip(@PathVariable UUID tripId, @PathVariable UUID id) throws TripNotFoundException {
+        List<PointOfInterest> updatedPoiList = tripService.deletePoiFromTrip(tripId, id);
+        List<PoiForUserResponseDTO> poiResponse = new ArrayList<>();
+        for(PointOfInterest p: updatedPoiList) {
+            poiResponse.add(
+                    new PoiForUserResponseDTO(
+                            p.getId(),
+                            p.getName(),
+                            p.getAddress(),
+                            p.getLatitude(),
+                            p.getLongitude(),
+                            p.getCategory(),
+                            p.getWebsite()
+                    )
+            );
+        }
+
+        return ResponseEntity.ok(poiResponse);
+    }
+
+    private TripResponseDTO convert(Trip trip) {
+        List<PoiForUserResponseDTO> poiResponse = new ArrayList<>();
+        for(PointOfInterest p: trip.getPointsOfInterest()) {
+            poiResponse.add(
+                    new PoiForUserResponseDTO(
+                            p.getId(),
+                            p.getName(),
+                            p.getAddress(),
+                            p.getLatitude(),
+                            p.getLongitude(),
+                            p.getCategory(),
+                            p.getWebsite()
+                    )
+            );
+        }
+
+        List<ChatMessage> savedMessages = chatService.savedMessagesForTrip(trip);
+        List<NotesResponseDTO> notes = new ArrayList<>();
+        for(ChatMessage cm: savedMessages) {
+            notes.add(
+                    new NotesResponseDTO (
+                            cm.getId(),
+                            cm.getText()
+                    )
+            );
+        }
+
+        TripResponseDTO trd = new TripResponseDTO(
+                trip.getId(),
+                trip.getUser().getId(),
+                trip.getDestination().getName(),
+                trip.getDestination().getCountry(),
+                trip.getDestination().getLatitude(),
+                trip.getDestination().getLongitude(),
+                trip.getDestination().getImageUrl(),
+                trip.getPreferredMonths(),
+                trip.getExactStartDate(),
+                trip.getExactEndDate(),
+                trip.getDurationDays(),
+                trip.getInterests(),
+                trip.getFreeTextPreferences(),
+                trip.getStatus(),
+                poiResponse,
+                notes
+        );
+
+        return trd;
+    }
 }

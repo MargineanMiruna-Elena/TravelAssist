@@ -1,28 +1,25 @@
 package com.mme.travelassist.model;
 
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
-import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
-@Table(name = "poi_caches")
+@Table(name = "points_of_interest")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class PoiCache {
+public class PointOfInterest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID id;
 
     @Column(unique = true, nullable = false)
     private String xid;
@@ -43,17 +40,23 @@ public class PoiCache {
 
     @NotBlank
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String rawDataJson;
-
-    @Column(nullable = false)
-    private LocalDateTime lastUpdated;
+    private String address;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
-            name = "poi_categories",
+            name = "poi_interests",
             joinColumns = @JoinColumn(name = "poi_id")
     )
-    @Column(name = "category")
+    @Column(name = "interest")
     @Enumerated(EnumType.STRING)
-    private Set<Category> categories = new HashSet<>();
+    private Set<Interest> interests = new HashSet<>();
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Column(name = "category")
+    private String category;
+
+    @Column(name = "website")
+    private String website;
 }

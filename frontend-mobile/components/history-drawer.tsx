@@ -10,7 +10,7 @@ import Animated, {
     interpolate,
 } from 'react-native-reanimated';
 import { X, ChevronRight, MessageSquarePlus } from 'lucide-react-native';
-import { HistoryDrawerProps } from "@/types/history-drawer-props";
+import { HistoryDrawerProps } from "@/types/props/history-drawer-props";
 
 const { width } = Dimensions.get('window');
 const DRAWER_WIDTH = width * 0.75;

@@ -166,7 +166,7 @@ const Account = () => {
     }
 
     return (
-        <SafeAreaView style={{flex: 1, backgroundColor: '#ffffff'}} edges={['top']}>
+        <SafeAreaView className="flex-1 bg-white" edges={['top']}>
             <ScrollView className="flex-1 bg-gray-50" showsVerticalScrollIndicator={false}>
                 <LinearGradient
                     colors={['#4f39f6', '#7f22fe', '#51a2ff']}

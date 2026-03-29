@@ -1,23 +1,23 @@
 package com.mme.travelassist.service.implementation;
 
 import com.mme.travelassist.dto.trips.CreateTripRequest;
-import com.mme.travelassist.dto.trips.GeoDbCityDTO;
+import com.mme.travelassist.dto.trips.PoiSearchResult;
 import com.mme.travelassist.dto.trips.TripPreferencesDTO;
+import com.mme.travelassist.dto.trips.UpdateDatesRequest;
 import com.mme.travelassist.exception.trip.DestinationNotFoundException;
+import com.mme.travelassist.exception.trip.TripNotFoundException;
 import com.mme.travelassist.exception.user.UserNotFoundException;
-import com.mme.travelassist.model.Destination;
-import com.mme.travelassist.model.PoiCache;
-import com.mme.travelassist.model.Trip;
-import com.mme.travelassist.model.User;
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.*;
+import com.mme.travelassist.model.enums.Interest;
 import com.mme.travelassist.model.enums.TripStatus;
 import com.mme.travelassist.repository.DestinationRepository;
-import com.mme.travelassist.repository.PoiCacheRepository;
+import com.mme.travelassist.repository.PointOfInterestRepository;
 import com.mme.travelassist.repository.TripRepository;
 import com.mme.travelassist.repository.UserRepository;
 import com.mme.travelassist.service.DestinationSyncService;
+import com.mme.travelassist.service.DestinationScoringService;
+import com.mme.travelassist.service.PoiApiService;
 import com.mme.travelassist.service.TripService;
-import com.mme.travelassist.utils.GeoDbCitiesClient;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,15 +32,18 @@ import java.util.stream.Collectors;
 public class TripServiceImpl implements TripService {
 
     private final DestinationRepository destinationRepository;
-    private final PoiApiServiceImpl poiApiService;
+    private final PoiApiService poiApiService;
     private static final Logger logger = LoggerFactory.getLogger(TripServiceImpl.class);
     private final DestinationSyncService destinationSyncService;
-    private final PoiCacheRepository poiCacheRepository;
+    private final DestinationScoringService destinationScoringService;
+
     private final UserRepository userRepository;
     private final TripRepository tripRepository;
+    private final PointOfInterestRepository pointOfInterestRepository;
 
     @Override
     public Trip createTrip(CreateTripRequest createTripRequest) throws DestinationNotFoundException, UserNotFoundException {
+        logger.warn("tripService - Attempting to create trip.");
 
         Optional<User> user = userRepository.findById(createTripRequest.getUserId());
         if (user.isEmpty()) {
@@ -54,16 +57,16 @@ public class TripServiceImpl implements TripService {
             throw new DestinationNotFoundException();
         }
 
-        List<PoiCache> attractions = new ArrayList<>();
-        for (String poi : createTripRequest.getSelectedAttractions()) {
-            Optional<PoiCache> poiCache = poiCacheRepository.findByXid(poi);
+        List<PointOfInterest> attractions = new ArrayList<>();
+        for (UUID poi : createTripRequest.getSelectedAttractions()) {
+            Optional<PointOfInterest> poiCache = pointOfInterestRepository.findById(poi);
             poiCache.ifPresent(attractions::add);
         }
 
-        Set<Category> categorySet = null;
+        Set<Interest> categorySet = null;
         if (createTripRequest.getInterests() != null && !createTripRequest.getInterests().isEmpty()) {
             categorySet = createTripRequest.getInterests().stream()
-                    .map(interest -> Category.valueOf(interest.toUpperCase()))
+                    .map(interest -> Interest.valueOf(interest.toUpperCase()))
                     .collect(Collectors.toSet());
         }
 
@@ -98,7 +101,8 @@ public class TripServiceImpl implements TripService {
                     createTripRequest.getDuration(),
                     categorySet,
                     createTripRequest.getAdditionalNotes(),
-                    status
+                    status,
+                    attractions
             );
         } else {
             createTrip = new Trip(
@@ -111,13 +115,25 @@ public class TripServiceImpl implements TripService {
                     createTripRequest.getDuration(),
                     categorySet,
                     createTripRequest.getAdditionalNotes(),
-                    status
+                    status,
+                    attractions
             );
         }
 
         tripRepository.save(createTrip);
 
         return createTrip;
+    }
+
+    @Override
+    public Trip getTrip(UUID id) throws TripNotFoundException {
+        Optional<Trip> trip = tripRepository.findById(id);
+        if (trip.isEmpty()) {
+            logger.warn("Trip with ID {} not found", id);
+            throw new TripNotFoundException();
+        }
+
+        return trip.get();
     }
 
     @Override
@@ -132,33 +148,49 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public List<Destination> getRecommendations(TripPreferencesDTO preferences) {
-        Set<Category> categorySet = null;
-        if (preferences.getInterests() != null && !preferences.getInterests().isEmpty()) {
-            categorySet = preferences.getInterests().stream()
-                    .map(interest -> Category.valueOf(interest.toUpperCase()))
-                    .collect(Collectors.toSet());
+    public Trip updateTripDates(UUID id, UpdateDatesRequest updateDatesRequest) throws TripNotFoundException {
+        Optional<Trip> oldTrip = tripRepository.findById(id);
+        if (oldTrip.isEmpty()) {
+            logger.warn("Trip with ID {} not found", id);
+            throw new TripNotFoundException();
         }
 
-        Set<Integer> monthSet = (preferences.getSelectedMonths() != null && !preferences.getSelectedMonths().isEmpty())
-                ? new HashSet<>(preferences.getSelectedMonths()) : null;
+        Trip updatedTrip = oldTrip.get();
+        updatedTrip.setExactStartDate(LocalDate.parse(updateDatesRequest.getStartDate()));
+        updatedTrip.setExactEndDate(LocalDate.parse(updateDatesRequest.getEndDate()));
+        updatedTrip.setDurationDays(updateDatesRequest.getDuration());
+        updatedTrip.setPreferredMonths(updateDatesRequest.getMonths());
+        updatedTrip.setIsFlexibleDate(false);
 
-        logger.info("TripService - Fetching destination recommendations");
-        List<Destination> destinations = destinationRepository.findByPreferences(monthSet, categorySet);
+        if (LocalDate.parse(updateDatesRequest.getStartDate()).isAfter(LocalDate.now())) {
+            updatedTrip.setStatus(TripStatus.UPCOMING);
+        } else if (LocalDate.parse(updateDatesRequest.getEndDate()).isAfter(LocalDate.now())) {
+            updatedTrip.setStatus(TripStatus.STARTED);
+        } else {
+            updatedTrip.setStatus(TripStatus.COMPLETED);
+        }
 
-        if (preferences.getCountry() == null || preferences.getCountry().isEmpty())
-            return destinations;
-
-        List<Destination> destinationsByCountry = destinations.stream().filter(destination -> Objects.equals(destination.getCountry(), preferences.getCountry())).toList();
-
-        if (destinationsByCountry.isEmpty())
-            return destinations;
-
-        return destinationsByCountry;
+        return tripRepository.save(updatedTrip);
     }
 
     @Override
-    public List<PoiCache> getAttractions(Destination destination, List<Category> interests) {
+    public void deleteTrip(UUID id) {
+        tripRepository.deleteById(id);
+    }
+
+    @Override
+    public List<Destination> getRecommendations(TripPreferencesDTO preferences) {
+        List<Destination> destinations = destinationRepository.findAll();
+        String country = preferences.getCountry();
+
+        return destinationScoringService.scoreAndRank(destinations, preferences, country)
+                .stream()
+                .map(ScoredDestination::destination)
+                .toList();
+    }
+
+    @Override
+    public List<PointOfInterest> getAttractions(Destination destination, List<Interest> interests) {
         return poiApiService.fetchAttractionsByDestination(destination, interests);
     }
 
@@ -192,8 +224,56 @@ public class TripServiceImpl implements TripService {
     }
 
     @Override
-    public Destination findOrCreateDestination(String cityName) {
+    public Destination findOrCreateDestination(String cityName, String countryName) {
         logger.info("tripService - Searching for destination {} in GeoDB", cityName);
-        return destinationSyncService.findOrCreateDestination(cityName);
+        return destinationSyncService.findOrCreateDestination(cityName, countryName);
+    }
+
+    @Override
+    public List<PoiSearchResult> searchPoiByName(String query, double lat, double lng) {
+        return poiApiService.search(query, lat, lng);
+    }
+
+    @Override
+    public List<PointOfInterest> addPoiToTrip(UUID tripId, String xId) throws TripNotFoundException {
+        logger.info("tripService - Adding point of interest to trip");
+        Trip updatedTrip = tripRepository.findById(tripId)
+                .orElseThrow(() -> {
+                    logger.warn("Trip with ID {} not found", tripId);
+                    return new TripNotFoundException();
+                });
+
+        boolean alreadyExists = updatedTrip.getPointsOfInterest().stream().anyMatch(poi -> poi.getXid().equals(xId));
+
+        if (alreadyExists) {
+            return updatedTrip.getPointsOfInterest();
+        }
+
+        PointOfInterest poi = poiApiService.findPoiOrCreate(updatedTrip, xId);
+        List<PointOfInterest> updatedList = new ArrayList<>(updatedTrip.getPointsOfInterest() != null
+                ? updatedTrip.getPointsOfInterest() : Collections.emptyList());
+        updatedList.add(poi);
+        updatedTrip.setPointsOfInterest(updatedList);
+        tripRepository.save(updatedTrip);
+
+        return updatedList;
+    }
+
+    @Override
+    public List<PointOfInterest> deletePoiFromTrip(UUID tripId, UUID id) throws TripNotFoundException {
+        logger.info("tripService - Deleting point of interest from trip");
+        Trip updatedTrip = tripRepository.findById(tripId)
+                .orElseThrow(() -> {
+                    logger.warn("Trip with ID {} not found", tripId);
+                    return new TripNotFoundException();
+                });
+
+        List<PointOfInterest> updatedList = new ArrayList<>(updatedTrip.getPointsOfInterest() != null
+                ? updatedTrip.getPointsOfInterest() : Collections.emptyList());
+        updatedList.remove(id);
+        updatedTrip.setPointsOfInterest(updatedList);
+        tripRepository.save(updatedTrip);
+
+        return updatedList;
     }
 }

@@ -1,6 +1,6 @@
 package com.mme.travelassist.dto.trips;
 
-import com.mme.travelassist.model.enums.Category;
+import com.mme.travelassist.model.enums.Interest;
 import lombok.Data;
 
 import java.util.Set;
@@ -13,6 +13,6 @@ public class DestinationResponseDTO {
     private String localName;
     private String country;
     private Set<Integer> bestMonths;
-    private Set<Category> tags;
+    private Set<Interest> tags;
     private String imageUrl;
 }
