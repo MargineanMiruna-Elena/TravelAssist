@@ -126,8 +126,8 @@
     },
     "preferences": {
       "title": "Alte preferințe?",
-      "subtitle": "Spune-mi mai multe despre planurile tale de călătorie",
-      "example": "ex: Prefer hoteluri de 4 stele, vreau să evit locurile aglomerate, sunt interesat de festivaluri locale...",
+      "subtitle": "Ajută-ne să-ți personalizăm călătoria. Împărtășind câteva detalii despre stilul tău de a călători, ne permiți să creăm un itinerariu care să ți se potrivească în totalitate.",
+      "example": "de exemplu: „Sunt o persoană matinală, aș dori o pauză de prânz la ora 13:00 și prefer un ritm relaxat, fără prea mult mers pe jos.”",
       "summary": "SUMAR CĂLĂTORIE",
       "destination": "VEI CĂLĂTORI ÎN:",
       "flexible": "Flexibil",

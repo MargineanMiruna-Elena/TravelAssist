@@ -15,6 +15,10 @@ const API_URL = "http://192.168.101.18:8080/api/user";
 
 class UserService {
 
+    async logout(): Promise<void> {
+        await AsyncStorage.multiRemove(['jwt', 'user']);
+    }
+
     async getCurrentUser(): Promise<any> {
         const user = await AsyncStorage.getItem('user');
         return user ? JSON.parse(user) : null;

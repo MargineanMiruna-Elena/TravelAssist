@@ -18,7 +18,7 @@ export default function TripHeaderSection({ trip, onClose }: HeaderSectionProps)
             <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.7)']}
                 className="absolute left-0 right-0 bottom-0 justify-start px-4 py-7"
-                locations={[0.1, 0.6, 0.8]}
+                locations={[0.1, 0.5]}
             >
                 <View className="bg-white self-start py-1 px-2 rounded-lg mb-2">
                     <Text className="text-[10px] font-extrabold text-violet-700">{trip.status.toUpperCase()}</Text>

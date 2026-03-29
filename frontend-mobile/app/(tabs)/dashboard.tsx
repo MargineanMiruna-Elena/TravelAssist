@@ -67,7 +67,7 @@ export default function Dashboard() {
                             <LinearGradient
                                 colors={['transparent', 'rgba(0,0,0,0.7)']}
                                 className="absolute left-0 right-0 bottom-0 h-[110] rounded-b-3xl justify-start px-4 py-7"
-                                locations={[0.1, 0.6, 0.8]}
+                                locations={[0.1, 0.4]}
                             >
                                 <Text className="text-lg text-white font-extrabold tracking-wider">{trip.destination}</Text>
                                 <Text className="text-sm text-white font-semibold">{trip.country}</Text>

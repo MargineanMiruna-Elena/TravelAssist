@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {INTERESTS} from '@/constants/interests';
 import {PreferencesProps} from "@/types/props/add-trip-props";
 import {formatDateRange} from "@/utils/formatDateRange";
+import {parseLocalDate} from "@/utils/dateUtils";
 
 export default function PreferencesStep({
                                             additionalNotes,
@@ -37,7 +38,7 @@ export default function PreferencesStep({
                     <Ionicons name="document-text" size={40} color="white"/>
                 </LinearGradient>
                 <Text className="text-3xl font-bold text-violet-700 mb-3 text-center">{t('trip.preferences.title')}</Text>
-                <Text className="text-base font-normal text-gray-700 tracking-wide text-center">{t('trip.preferences.subtitle')}</Text>
+                <Text className="text-sm font-normal text-gray-700 tracking-wide text-center">{t('trip.preferences.subtitle')}</Text>
             </View>
 
             <TextInput
@@ -68,12 +69,12 @@ export default function PreferencesStep({
                         <>
                             <View className="flex-1 items-center">
                                 <Text className="text-xs font-semibold text-gray-500 tracking-wider">START</Text>
-                                <Text className="text-sm font-bold text-black pt-1 tracking-wide text-center">{fmt(new Date(startDate!))}</Text>
+                                <Text className="text-sm font-bold text-black pt-1 tracking-wide text-center">{fmt(parseLocalDate(startDate!))}</Text>
                             </View>
                             <View className="w-px h-9 bg-gray-300"/>
                             <View className="flex-1 items-center">
                                 <Text className="text-xs font-semibold text-gray-500 tracking-wider">END</Text>
-                                <Text className="text-sm font-bold text-black pt-1 tracking-wide text-center">{fmt(new Date(endDate!))}</Text>
+                                <Text className="text-sm font-bold text-black pt-1 tracking-wide text-center">{fmt(parseLocalDate(endDate!))}</Text>
                             </View>
                             <View className="w-px h-9 bg-gray-300"/>
                             <View className="flex-1 items-center">

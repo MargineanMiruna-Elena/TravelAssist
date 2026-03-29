@@ -126,8 +126,8 @@
     },
     "preferences": {
       "title": "Any other preferences?",
-      "subtitle": "Tell me more about your travel plans",
-      "example": "ex: I prefer 4-star hotels, I’d like to stay away from tourist traps, I’m interested in local festivals...",
+      "subtitle": "Help us tailor your journey. Sharing a few details about your travel style allows us to craft an itinerary that is uniquely yours.",
+      "example": "e.g., 'I’m an early riser, I’d like a lunch break at 1 PM, and I prefer a relaxed pace with not too much walking...'",
       "summary": "TRIP SUMMARY",
       "destination": "GOING TO:",
       "flexible": "Flexible",

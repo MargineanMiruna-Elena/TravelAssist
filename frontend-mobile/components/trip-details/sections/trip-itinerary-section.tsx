@@ -35,7 +35,7 @@ export default function TripItinerarySection({ onGenerate }: Props) {
                 activeOpacity={0.85}
             >
                 <LinearGradient
-                    colors={['#4f39f6', '#7f22fe']}
+                    colors={['#4f39f6', '#7f22fe', '#51a2ff']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 0 }}
                     className="py-3"

@@ -1,18 +1,22 @@
 import "../i18n/i18n";
 import {useEffect} from "react";
-import {Slot, Stack, useRouter, useSegments} from "expo-router";
+import { Stack, useRouter, useSegments } from "expo-router";
 import AuthProvider from "@/context/AuthProvider";
-import {PaperProvider} from 'react-native-paper';
-import {useAuth} from "@/hooks/use-auth";
+import { PaperProvider } from 'react-native-paper';
+import { useAuth } from "@/hooks/use-auth";
 import { StatusBar } from 'expo-status-bar';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import {setupAuthInterceptor} from "@/services/auth-interceptor";
+import {useProtectedRoute} from "@/hooks/use-auth-check";
 
 function RootLayoutNav() {
     const {user, isLoading} = useAuth();
     const segments = useSegments();
     const router = useRouter();
+    const { isChecking } = useProtectedRoute();
 
     useEffect(() => {
+        setupAuthInterceptor();
         if (isLoading) return;
 
         const firstSegment = segments[0] as string | undefined;
@@ -24,6 +28,8 @@ function RootLayoutNav() {
             router.replace("/dashboard" as any);
         }
     }, [user, isLoading, segments]);
+
+    if (isChecking) return null;
 
     return (
         <>

@@ -6,6 +6,7 @@ import {useTranslation} from 'react-i18next';
 import {DatesProps} from "@/types/props/add-trip-props";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import {MONTHS} from "@/constants/months";
+import {parseLocalDate} from "@/utils/dateUtils";
 
 export default function DatesStep({
                                       dateType,
@@ -98,8 +99,8 @@ export default function DatesStep({
                                 <DateTimePicker
                                     value={
                                         activePicker === 'start'
-                                            ? (startDate ? new Date(startDate) : new Date())
-                                            : (endDate ? new Date(endDate) : startDate ? new Date(startDate) : new Date())
+                                            ? (startDate ? parseLocalDate(startDate) : new Date())
+                                            : (endDate ? parseLocalDate(endDate) : startDate ? parseLocalDate(startDate) : new Date())
                                     }
                                     mode="date"
                                     display={Platform.OS === 'ios' ? 'inline' : 'calendar'}

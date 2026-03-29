@@ -6,6 +6,7 @@ import TripService from '@/services/trip-service';
 import {DatesSectionProps} from "@/types/props/trip-details-modal-props";
 import {formatDateRange} from "@/utils/formatDateRange";
 import {FontAwesome, MaterialIcons} from "@expo/vector-icons";
+import {parseLocalDate} from "@/utils/dateUtils";
 
 type PickerTarget = 'start' | 'end' | null;
 
@@ -28,10 +29,10 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
 
     const [editing, setEditing] = useState(false);
     const [startDate, setStartDate] = useState<Date>(
-        trip.startDate ? new Date(trip.startDate) : getTomorrow()
+        trip.startDate ? parseLocalDate(trip.startDate) : getTomorrow()
     );
     const [endDate, setEndDate] = useState<Date>(
-        trip.endDate ? new Date(trip.endDate) : getInOneWeek()
+        trip.endDate ? parseLocalDate(trip.endDate) : getInOneWeek()
     );
     const [activePicker, setActivePicker] = useState<PickerTarget>(null);
     const [saving, setSaving] = useState(false);
@@ -41,8 +42,8 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
         d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
     const calculateDuration = (startDate: string, endDate: string) => {
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start = parseLocalDate(startDate);
+        const end = parseLocalDate(endDate);
         const diffTime = Math.abs(end.getTime() - start.getTime());
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
         return diffDays || 1;
@@ -51,8 +52,8 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
 
     const calculateSelectedMonths = (startDate: string, endDate: string): number[] => {
         if (!startDate || !endDate) return [];
-        const start = new Date(startDate);
-        const end = new Date(endDate);
+        const start = parseLocalDate(startDate);
+        const end = parseLocalDate(endDate);
         const months = new Set<number>();
 
         let current = new Date(start.getFullYear(), start.getMonth(), 1);
@@ -63,14 +64,23 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
         return Array.from(months);
     };
 
+    const toLocalDateString = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     const handleSave = async () => {
         setSaving(true);
         try {
+            const start = toLocalDateString(startDate);
+            const end = toLocalDateString(endDate);
             const payload = {
-                startDate: startDate.toISOString().split('T')[0],
-                endDate: endDate.toISOString().split('T')[0],
-                duration: calculateDuration(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0]),
-                months: calculateSelectedMonths(startDate.toISOString().split('T')[0], endDate.toISOString().split('T')[0])
+                startDate: start,
+                endDate: end,
+                duration: calculateDuration(start, end),
+                months: calculateSelectedMonths(start, end)
             };
             const updatedDatesTrip = await TripService.updateTripDates(trip.id, payload);
             onUpdate(updatedDatesTrip);
@@ -83,8 +93,8 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
     };
 
     const handleCancel = () => {
-        setStartDate(trip.startDate ? new Date(trip.startDate) : new Date());
-        setEndDate(trip.endDate ? new Date(trip.endDate) : new Date());
+        setStartDate(trip.startDate ? parseLocalDate(trip.startDate) : new Date());
+        setEndDate(trip.endDate ? parseLocalDate(trip.endDate) : new Date());
         setEditing(false);
     };
 
@@ -123,12 +133,12 @@ export default function TripDatesSection({ trip, onUpdate }: DatesSectionProps) 
                         <>
                             <View className="flex-1 items-center">
                                 <Text className="text-xs font-semibold text-gray-500 tracking-wider">START</Text>
-                                <Text className="text-sm font-bold text-black pt-1 tracking-wide">{fmt(new Date(trip.startDate!))}</Text>
+                                <Text className="text-sm font-bold text-black pt-1 tracking-wide">{fmt(parseLocalDate(trip.startDate!))}</Text>
                             </View>
                             <View className="w-px h-9 bg-gray-300"/>
                             <View className="flex-1 items-center">
                                 <Text className="text-xs font-semibold text-gray-500 tracking-wider">END</Text>
-                                <Text className="text-sm font-bold text-black pt-1 tracking-wide">{fmt(new Date(trip.endDate!))}</Text>
+                                <Text className="text-sm font-bold text-black pt-1 tracking-wide">{fmt(parseLocalDate(trip.endDate!))}</Text>
                             </View>
                             <View className="w-px h-9 bg-gray-300"/>
                             <View className="flex-1 items-center">

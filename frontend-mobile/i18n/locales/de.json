@@ -126,8 +126,8 @@
     },
     "preferences": {
       "title": "Haben Sie weitere Wünsche?",
-      "subtitle": "Erzählen Sie mir mehr über Ihre Reisepläne",
-      "example": "z.B.: Ich bevorzuge 4-Sterne-Hotels, möchte Touristenmassen meiden, interessiere mich für lokale Festivals...",
+      "subtitle": "Helfen Sie uns, Ihre Reise individuell zu gestalten. Indem Sie uns einige Details über Ihren Reisestil verraten, können wir einen Reiseplan erstellen, der perfekt auf Sie zugeschnitten ist.",
+      "example": "z.B.: „Ich bin Frühaufsteher, hätte gerne oine Mittagspause um 13:00 Uhr und bevorzuge ein entspanntes Tempo ohne langes Laufen zu Fuß.",
       "summary": "REISEZUSAMMENFASSUNG",
       "destination": "SIE REISEN NACH:",
       "flexible": "Flexibel",

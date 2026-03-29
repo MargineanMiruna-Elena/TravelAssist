@@ -14,6 +14,7 @@ import InterestsStep from "@/components/add-trip/interests-step";
 import PreferencesStep from "@/components/add-trip/preferences-step";
 import DestinationsStep from "@/components/add-trip/destinations-step";
 import AttractionsStep from "@/components/add-trip/attractions-step";
+import {parseLocalDate, toLocalDateString} from "@/utils/dateUtils";
 
 export default function AddTrip() {
     const {t} = useTranslation();
@@ -99,8 +100,8 @@ export default function AddTrip() {
 
     const calculateDuration = () => {
         if (tripData.dateType === 'specific' && tripData.startDate && tripData.endDate) {
-            const start = new Date(tripData.startDate);
-            const end = new Date(tripData.endDate);
+            const start = parseLocalDate(tripData.startDate);
+            const end = parseLocalDate(tripData.endDate);
             const diffTime = Math.abs(end.getTime() - start.getTime());
             const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
             return diffDays || 1;
@@ -110,12 +111,14 @@ export default function AddTrip() {
 
     const calculateSelectedMonths = (): number[] => {
         if (!tripData.startDate || !tripData.endDate) return tripData.selectedMonths;
-        const startDate = new Date(tripData.startDate);
-        const endDate = new Date(tripData.endDate);
+        const start = parseLocalDate(tripData.startDate);
+        const end = parseLocalDate(tripData.endDate);
         const months = new Set<number>();
 
-        let current = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
-        while (current <= endDate) {
+        let current = new Date(start.getFullYear(), start.getMonth(), 1);
+        const limit = new Date(end.getFullYear(), end.getMonth(), 1); // 🔥 IMPORTANT
+
+        while (current <= limit) {
             months.add(current.getMonth() + 1);
             current.setMonth(current.getMonth() + 1);
         }
@@ -409,12 +412,12 @@ export default function AddTrip() {
     };
 
     const handleDateChange = (picker: 'start' | 'end', date: Date) => {
-        const iso = date.toISOString().split('T')[0];
+        const dateStr = toLocalDateString(date);
         if (picker === 'start') {
-            const newEndDate = (tripData.endDate && new Date(tripData.endDate) < date) ? '' : tripData.endDate;
+            const newEndDate = (tripData.endDate && parseLocalDate(tripData.endDate) < date) ? '' : tripData.endDate;
             setTripData(prev => ({
                 ...prev,
-                startDate: iso,
+                startDate: dateStr,
                 endDate: newEndDate,
             }));
             setTripData(prev => ({
@@ -424,7 +427,7 @@ export default function AddTrip() {
         } else {
             setTripData(prev => ({
                 ...prev,
-                endDate: iso,
+                endDate: dateStr,
             }));
             setTripData(prev => ({
                 ...prev,

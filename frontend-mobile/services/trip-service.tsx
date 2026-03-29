@@ -5,6 +5,7 @@ import {CreatedTrip} from "@/types/trip/created-trip";
 import {Trip} from "@/types/trip/trip";
 import {PointOfInterest} from "@/types/trip/point-of-interest";
 import {SearchResult} from "@/types/trip/search-result";
+import {DayWeather} from "@/types/trip/day-weather";
 
 export interface TripPreferencesPayload {
     interests: string[];
@@ -198,6 +199,17 @@ class TripService {
             return response.data;
         } catch (error: any) {
             console.error("Error deleting trip:", error);
+            throw error;
+        }
+    }
+
+    async getWeather(tripId: string): Promise<{ days: DayWeather[], historical: boolean }> {
+        try {
+            const headers = await UserService.getAuthHeader();
+            const res = await axios.get<{ days: DayWeather[], historical: boolean }>(`${API_URL}/${tripId}/weather`, { headers });
+            return res.data;
+        } catch (error: any) {
+            console.error("Error getting weather forecast:", error);
             throw error;
         }
     }
