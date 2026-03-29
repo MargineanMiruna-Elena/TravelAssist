@@ -160,5 +160,10 @@
   },
   "dashboard": {
     "destinations": "destinations"
+  },
+  "bot": {
+    "welcome-message": "Hi there! I’m TravelBuddy, your personal guide to the world. Where are we heading next? I can help you find destinations, discover local gems, or plan your perfect itinerary. Just tell me what you’re looking for!",
+    "context": "Select Chat Context",
+    "subtitle": "TravelBuddy will know the details of your trip and adapt the answers.",
   }
 }

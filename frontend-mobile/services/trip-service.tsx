@@ -1,31 +1,8 @@
 import axios from 'axios';
 import UserService from "@/services/user-service";
-
-export interface Trip {
-    userId: string;
-    startDate: string;
-    endDate: string;
-    selectedMonths: number[];
-    duration: string;
-    interests: string[];
-    additionalNotes: string;
-    selectedDestination: string;
-    selectedAttractions: string[];
-}
-
-export interface CreatedTrip {
-    id: string;
-}
-
-export interface DisplayTrip {
-    id: string;
-    destinationName: string;
-    destinationCountry: string;
-    destinationImageUrl: string;
-    startDate: string;
-    endDate: string;
-    status: string;
-}
+import {CreateTripPayload} from "@/types/trip/create-trip-payload";
+import {CreatedTrip} from "@/types/trip/created-trip";
+import {Trip} from "@/types/trip/trip";
 
 export interface TripPreferencesPayload {
     interests: string[];
@@ -52,10 +29,10 @@ export interface AttractionResponse {
     longitude: bigint;
 }
 
-const API_URL = "http://172.20.10.12:8080/api/trips";
+const API_URL = "http://192.168.101.18:8080/api/trips";
 
 class TripService {
-    async createTrip(payload: Trip): Promise<CreatedTrip> {
+    async createTrip(payload: CreateTripPayload): Promise<CreatedTrip> {
         try {
             const headers = await UserService.getAuthHeader();
             const response = await axios.post<CreatedTrip>(`${API_URL}/create`, payload, { headers });
@@ -66,11 +43,11 @@ class TripService {
         }
     }
 
-    async getTripsForUser(): Promise<DisplayTrip[]> {
+    async getTripsForUser(): Promise<Trip[]> {
         try {
             const headers = await UserService.getAuthHeader();
             const user = await UserService.getCurrentUser();
-            const response = await axios.get<DisplayTrip[]>(`${API_URL}/all-trips/${user.id}`, { headers });
+            const response = await axios.get<Trip[]>(`${API_URL}/all-trips/${user.id}`, { headers });
             console.log(response.data);
             return response.data;
         } catch (error) {

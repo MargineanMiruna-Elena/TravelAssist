@@ -11,7 +11,7 @@ interface PreferenceUpdatePayload {
     notificationsEmail?: boolean;
 }
 
-const API_URL = "http://172.20.10.12:8080/api/user";
+const API_URL = "http://192.168.101.18:8080/api/user";
 
 class UserService {
 

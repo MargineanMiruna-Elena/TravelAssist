@@ -8,16 +8,8 @@ import Logo from "@/components/logo";
 import { Calendar, X, Clock } from 'lucide-react-native';
 import TripService from "@/services/trip-service";
 import {useTranslation} from "react-i18next";
-
-interface Trip {
-    id: string;
-    destinationName: string;
-    destinationCountry: string;
-    destinationImageUrl: string;
-    startDate: string;
-    endDate: string;
-    status: string;
-}
+import {formatDateRange} from "@/utils/formatDateRange";
+import {Trip} from "@/types/trip";
 
 const { width, height } = Dimensions.get('window');
 
@@ -50,28 +42,7 @@ export default function Dashboard() {
         setModalVisible(true);
     };
 
-    const formatDateRange = (startStr: string, endStr: string) => {
-        if (!startStr || !endStr) return "";
 
-        const start = new Date(startStr);
-        const end = new Date(endStr);
-
-        const startDay = start.getDate();
-        const endDay = end.getDate();
-        const year = start.getFullYear();
-
-        // Obținem numele lunii (ex: "Mar")
-        const month = start.toLocaleString('default', { month: 'short' });
-
-        // Cazul în care ambele date sunt în aceeași lună (cel mai frecvent)
-        if (start.getMonth() === end.getMonth()) {
-            return `${startDay} - ${endDay} ${month} ${year}`;
-        }
-
-        // Cazul în care datele trec în luna următoare (ex: 29 Mar - 02 Apr 2026)
-        const endMonth = end.toLocaleString('default', { month: 'short' });
-        return `${startDay} ${month} - ${endDay} ${endMonth} ${year}`;
-    };
 
     return (
         <SafeAreaView className="flex-1 bg-white">
@@ -89,7 +60,7 @@ export default function Dashboard() {
                             onPress={() => openDetails(trip)}
                             activeOpacity={0.9}
                         >
-                            <Image source={{ uri: trip.destinationImageUrl }} className="absolute inset-0 w-full h-full" />
+                            <Image source={{ uri: trip.imageUrl }} className="absolute inset-0 w-full h-full" />
 
                             <View className="absolute top-3 left-3">
                                 <View className="bg-white self-start py-1 px-2 rounded-lg">
@@ -102,11 +73,11 @@ export default function Dashboard() {
                                 className="absolute left-0 right-0 bottom-0 h-[110] rounded-b-3xl justify-start px-4 py-7"
                                 locations={[0.1, 0.6, 0.8]}
                             >
-                                <Text className="text-lg text-white font-extrabold tracking-wider">{trip.destinationName}</Text>
-                                <Text className="text-sm text-white font-semibold">{trip.destinationCountry}</Text>
+                                <Text className="text-lg text-white font-extrabold tracking-wider">{trip.destination}</Text>
+                                <Text className="text-sm text-white font-semibold">{trip.country}</Text>
                                 <View className="flex-row items-center gap-1 pt-1">
                                     <Calendar size={14} color="rgba(255,255,255,0.85)" />
-                                    <Text className="text-xs text-white font-medium">{formatDateRange(trip.startDate, trip.endDate)}</Text>
+                                    <Text className="text-xs text-white font-medium">{formatDateRange(trip.startDate, trip.endDate, trip.preferredMonths)}</Text>
                                 </View>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -119,16 +90,16 @@ export default function Dashboard() {
                     <View style={styles.modalContent}>
                         {selectedTrip && (
                             <>
-                                <Image source={{ uri: selectedTrip.destinationImageUrl }} style={styles.modalImage} />
+                                <Image source={{ uri: selectedTrip.imageUrl }} style={styles.modalImage} />
                                 <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
                                     <X color="white" size={24} />
                                 </TouchableOpacity>
 
                                 <View style={styles.modalBody}>
-                                    <Text style={styles.modalTitle}>{selectedTrip.destinationName}</Text>
+                                    <Text style={styles.modalTitle}>{selectedTrip.destination}</Text>
                                     <View style={styles.detailRow}>
                                         <Clock color="#7f22fe" size={18} />
-                                        <Text style={styles.detailText}>{formatDateRange(selectedTrip.startDate, selectedTrip.endDate)}</Text>
+                                        <Text style={styles.detailText}>{formatDateRange(selectedTrip.startDate, selectedTrip.endDate, selectedTrip.preferredMonths)}</Text>
                                     </View>
                                     <Text style={styles.descriptionText}></Text>
 

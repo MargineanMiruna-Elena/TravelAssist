@@ -1,20 +1,29 @@
 package com.mme.travelassist.dto.trips;
 
+import com.mme.travelassist.model.enums.Category;
 import com.mme.travelassist.model.enums.TripStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 public class TripResponseDTO {
     private UUID id;
-    private String destinationName;
-    private String destinationCountry;
-    private String destinationImageUrl;
+    private UUID userId;
+    private String destination;
+    private String country;
+    private Double latitude;
+    private Double longitude;
+    private String imageUrl;
+    private Set<Integer> preferredMonths;
     private LocalDate startDate;
     private LocalDate endDate;
+    private int durationDays;
+    private Set<Category> interests;
+    private String freeTextPreferences;
     private TripStatus status;
 }
